@@ -8,39 +8,6 @@ It can differentiate and/or simplify basically anything with real numbers, e, pi
 Including: automatic simplification of a lot of stuff (when precision would not be lost), grouping by parenthesis, implicit multiplication (without a times symbol, for example: "2x"), negative stuff, implicit differentiation, undefined values, functional importance, and pointing to your errors.
 
 
-Source Files
-------------
-
-+ mathClasses.txt  // a list of the files to compile
-+ ArrayLists.java  // general ArrayList methods I needed, like for splitting on operations
-+ ArraySearch.java // general Array search method I needed
-+ Simple.java      // a simple simplification user interface
-+ Derivative.java  // a user interface for differentiation (also a derivative class)
-+ Expr.java        // superclass for expressions (including sums, variables, e)
-+ // BoolExpr.java    // superclass for boolean Exprs
-+ Constant.java    // superclass for constants (e, pi, numbers)
-+ Operation.java   // superclass for operations (like sums, products)
-+ // Conditional.java // conditional stuff
-+ ExprParser.java  // the longest (and most complex), parses an expression from a string
-+ Subscript.java   // a mathematical subscript, like for a logarithm
-+ PartialParseExpr.java // class for partially-parsed expressions
-+ Token.java       // general container class for partially- or fully-parsed expressions
-+ TokenList.java   // ArrayList of Tokens
-+ Number.java      // a number, with its value stored in a Double
-+ E.java           // an e constant
-+ Pi.java          // a π (pi) constant
-+ Var.java         // a variable (like x, y, z, a)
-+ Sum.java         // a sum of expressions
-+ Product.java     // a product of expressions
-+ Exponent.java    // an exponent with a base and exponent
-+ Division.java    // a quotient with a numerator and denominator
-+ Logarithm.java   // a logarithm
-+ Sin.java         // the trigonometric sine function
-+ Cos.java         // the trigonometric cosine function
-+ Undef.java       // undefined (undef)
-+ // Bool.java        // true (yes) or false (no)
-
-
 Command-line Arguments for langdon.math.Simple
 ----------------------------------------------
 
@@ -55,6 +22,39 @@ then (optional):
 `-- [expr1, [expr2, ...]]` (some mathematical expressions to simplify)  
 
 You can put substitutions at/before the beginning of the expression, separated by a ';', to be substituted in the expression after and before it's simplified, like "a=2;2a".
+
+
+Source Files
+------------
+
++ mathClasses.txt  (a list of the files to compile)
++ ArrayLists.java  (general ArrayList methods I needed, like for splitting on operations)
++ ArraySearch.java (general Array search method I needed)
++ Simple.java      (a simple simplification user interface)
++ Derivative.java  (a user interface for differentiation (also a derivative class))
++ Expr.java        (superclass for expressions (including sums, variables, e))
++ // BoolExpr.java    (superclass for boolean Exprs)
++ Constant.java    (superclass for constants (e, pi, numbers))
++ Operation.java   (superclass for operations (like sums, products))
++ // Conditional.java (conditional stuff)
++ ExprParser.java  (the longest (and most complex), parses an expression from a string)
++ Subscript.java   (a mathematical subscript, like for a logarithm)
++ PartialParseExpr.java (class for partially-parsed expressions)
++ Token.java       (general container class for partially- or fully-parsed expressions)
++ TokenList.java   (ArrayList of Tokens)
++ Number.java      (a number, with its value stored in a Double)
++ E.java           (an e constant)
++ Pi.java          (a π (pi) constant)
++ Var.java         (a variable (like x, y, z, a))
++ Sum.java         (a sum of expressions)
++ Product.java     (a product of expressions)
++ Exponent.java    (an exponent with a base and exponent)
++ Division.java    (a quotient with a numerator and denominator)
++ Logarithm.java   (a logarithm)
++ Sin.java         (the trigonometric sine function)
++ Cos.java         (the trigonometric cosine function)
++ Undef.java       (undefined (undef))
++ // Bool.java        (true (yes) or false (no))
 
 
 Examples
