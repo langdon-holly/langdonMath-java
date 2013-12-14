@@ -50,7 +50,7 @@ first, options:
 -s printStyle  switches to printing Style printStyle (like "pretty" or "dump")
 -e expr  simplifies the mathematical Expression expr
 then (optional):
-\-- [expr1, [expr2, ...]] (some mathematical expressions to simplify)
+-- \[expr1, [expr2, ...]] (some mathematical expressions to simplify)
 
 You can put substitutions at/before the beginning of the expression, separated by a ';', to be substituted in the expression after and before it's simplified, like "a=2;2a".
 
