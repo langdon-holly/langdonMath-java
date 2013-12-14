@@ -16,7 +16,7 @@ first, options:
 `-D`       turns off Debugging (default)  
 `-p`       switches to Plain printing style  
 `-P`       switches to interactive printing style (default)  
-`-s printStyle`  switches to printing Style printStyle (like "pretty" or "dump")  
+`-o outputFormat`  switches to Output format outputFormat (like "pretty" or "dump")  
 `-e expr`  simplifies the mathematical Expression expr  
 then (optional):  
 `-- [expr1, [expr2, ...]]` (some mathematical expressions to simplify)  
@@ -76,7 +76,7 @@ log[-2] 2 = undef
 ```
 
 ```
-$ java langdon.math.Simple -s dump -- 2 e d/dx2cx
+$ java langdon.math.Simple -o dump -- 2 e d/dx2cx
 2 = 2
 e = e
 d/dx2cx = (Sum (Product 2 c) (Product 2 (Derivative c x) x))
