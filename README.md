@@ -45,14 +45,14 @@ Command-line Arguments for langdon.math.Simple
 ----------------------------------------------
 
 first, options:
--d       turns on Debugging  
--D       turns off Debugging (default)  
--p       switches to Plain printing style  
--P       switches to interactive printing style (default)  
--s printStyle  switches to printing Style printStyle (like "pretty" or "dump")  
--e expr  simplifies the mathematical Expression expr  
+`-d`       turns on Debugging  
+`-D`       turns off Debugging (default)  
+`-p`       switches to Plain printing style  
+`-P`       switches to interactive printing style (default)  
+`-s printStyle`  switches to printing Style printStyle (like "pretty" or "dump")  
+`-e expr`  simplifies the mathematical Expression expr  
 then (optional):  
--- \[expr1, [expr2, ...]] (some mathematical expressions to simplify)  
+`-- \[expr1, [expr2, ...]]` (some mathematical expressions to simplify)  
 
 You can put substitutions at/before the beginning of the expression, separated by a ';', to be substituted in the expression after and before it's simplified, like "a=2;2a".
 
@@ -60,30 +60,43 @@ You can put substitutions at/before the beginning of the expression, separated b
 Examples
 --------
 
+```
 $ java langdon.math.Simple -e 'd/dx(5x^2+cx^3)'  
 d/dx(5x^2+cx^3) = 10x+3c\*x^2+dc/dx*x^3
+```
 
+```
 $ java langdon.math.Simple -pe 'd/dx x/(x/(x^2))'  
 2x
+```
 
+```
 $ java langdon.math.Simple -e 'log[-2] 2'  
 log[-2] 2 = undef
+```
 
+```
 $ java langdon.math.Simple -s dump -- 2 e d/dx2cx  
 2 = 2  
 e = e  
 d/dx2cx = (Sum (Product 2 c) (Product 2 (Derivative c x) x))
+```
 
+```
 $ java langdon.math.Simple  
 : sin 3pi/2  
 = -1  
 : sin 100pi/3  
 = -0.5sqrt(3)  
-:  
+:
+```
 
+```
 $ java langdon.math.Simple -e 'a=b; d/db dy/da'  
 a=b; d/db dy/da = d^2y/db^2  
+```
 
+```
 $ java langdon.math.Simple -ds dump -e '7x^3'  
 tokenizing "7x^3"  
 tokens:    [([7]"7"), ([x]"x"), ([exponentCaret]"^"), ([3]"3")]  
@@ -118,7 +131,9 @@ parsing     [([3]"3")]
 Simple.simplify: before substitution: (Product 7 (Exponent x 3))  
 Simple.simplify: after substitution:  (Product 7 (Exponent x 3))  
 7x^3 = (Product 7 (Exponent x 3))
+```
 
+```
 $ java langdon.math.Simple -de '3\*+/2'  
 tokenizing "3\*+/2"  
 tokens:    [([3]"3"), ([timesAst]"\*"), ([plus]"+"), ([divisionSlash]"/"), ([2]"2")]  
@@ -157,3 +172,4 @@ parsing     []
 parse error: token(s) expected, but not found (check your syntax)  
 3*+/2  
   ^
+```
