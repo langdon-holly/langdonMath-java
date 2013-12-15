@@ -345,8 +345,111 @@ public abstract class ExprParser {
 //     }
     
     public static TokenList<Object> tokenize(String string, Context context) throws ParseException {
+<<<<<<< HEAD
         Tokenizer tokenizer = new Tokenizer(tokens, new ExprTokenParser());
         return tokenizer.tokenize(string, context);
+=======
+        if (debug) System.err.println("tokenizing \"" + string + "\"");
+        String string2 = string;
+        TokenList<Object> tokened = new TokenList<Object>(0);
+        HashMap<Character,Var> vars = new HashMap<Character,Var>();
+        int indexAt = 0;
+        
+        while (indexAt < string.length()) {
+        
+            int tokenOnIndex = 0;
+            boolean keepGoing = true;
+            
+            while (keepGoing && tokenOnIndex < Array.getLength(tokens)) {
+                Pattern pattern = Pattern.compile("^"+tokens[tokenOnIndex][0]);
+                Matcher matcher = pattern.matcher(string2);
+                
+                if (matcher.find()) {
+                    String matched = matcher.group();
+                    String token = tokens[tokenOnIndex][1];
+                    
+                    if (token.equals("piWord")) {
+                        tokened.add(new Token<Object>(new Pi(), string, indexAt, indexAt + matcher.end()));
+                    }
+                    else if (token.equals("e")) {
+                        tokened.add(new Token<Object>(new E(), string, indexAt, indexAt + matcher.end()));
+                    }
+                    else if (token.equals("lonely-E")) {
+                        throw new ParseException("E is lonely", indexAt);
+                    }
+                    else if (token.equals("lonely-d")) {
+                        throw new ParseException("d is lonely", indexAt);
+                    }
+                    else if (token.equals("i")) {
+                        // if (debug) System.err.println("i am not yet supported");
+                        throw new ParseException("i am not yet supported", indexAt);
+                    }
+                    else if (token.equals("var")) {
+                        tokened.add(new Token<Object>(context.getVar(matched.charAt(0)), string, indexAt, indexAt + matcher.end()));
+                    }
+                    else if (token.equals("number")) {
+                        tokened.add(new Token<Object>(langdon.math.Number.make(Double.parseDouble(matched)), string, indexAt, indexAt + matcher.end()));
+                    }
+                    else if (token.equals("derivativeFunc")) {
+                        Pattern pattern1 = Pattern.compile("^d(?:\\^(\\d+))?/d([a-zA-Z])(?:\\^(\\d+))?$");
+                        Matcher matcher1 = pattern1.matcher(matched);
+                        matcher1.find();
+                        String firstNum  = matcher1.group(1);
+                        String character = matcher1.group(2);
+                        String lastNum   = matcher1.group(3);
+                        if (firstNum == null && lastNum == null) {
+                            firstNum = "1";
+                            lastNum = "1";
+                        }
+                        if (firstNum == null || lastNum == null || Integer.parseInt(firstNum) != Integer.parseInt(lastNum)) throw new ParseException("derivative degrees don't match", indexAt);
+                        //tokened.add("derivativeFunc(" + character + "," + firstNum + ")");
+                        PartialParseExpr partial = new PartialParseExpr("derivativeFunc");
+                        //System.err.println("chrat"+character.charAt(0));
+                        partial.put("character", character.charAt(0));
+                        partial.put("degree", Integer.parseInt(firstNum));
+                        tokened.add(new Token<Object>(partial, string, indexAt, indexAt + matcher.end()));
+                    }
+                    else if (token.equals("varDerivative")) {
+                        Pattern pattern1 = Pattern.compile("^d(?:\\^(\\d+))?([a-zA-Z])/d([a-zA-Z])(?:\\^(\\d+))?$");
+                        Matcher matcher1 = pattern1.matcher(matched);
+                        matcher1.find();
+                        String firstNum  = matcher1.group(1);
+                        String var       = matcher1.group(2);
+                        String character = matcher1.group(3);
+                        String lastNum   = matcher1.group(4);
+                        if (firstNum == null && lastNum == null) {
+                            firstNum = "1";
+                            lastNum = "1";
+                        }
+                        if (firstNum == null || lastNum == null || Integer.parseInt(firstNum) != Integer.parseInt(lastNum)) throw new ParseException("derivative degrees don't match", indexAt);
+                        tokened.add(new Token<Object>(Derivative.make(context.getVar(var.charAt(0)), context.getVar(character.charAt(0)), Integer.parseInt(firstNum)), string, indexAt, indexAt + matcher.end()));
+                    }
+                    else if (token.equals("undef")) {
+                        tokened.add(new Token<Object>(new Undef(), string, indexAt, indexAt + matcher.end()));
+                    }
+                    else {
+                        tokened.add(new Token<Object>(token, string, indexAt, indexAt + matcher.end()));
+                    }
+                    
+                    keepGoing = false;
+                    
+                    indexAt+= matcher.end() - matcher.start();
+                    string2 = string2.substring(matcher.end(), string2.length());
+                    
+                    // if (debug) System.err.println("last token: " +  tokened.get(tokened.size() - 1));
+                    // if (debug) System.err.println("indexAt next: " +  indexAt);
+                }
+                tokenOnIndex++;
+            }
+            
+            if (keepGoing) {
+                throw new ParseException(noTokenMsg, indexAt);
+            }
+        }
+        
+        if (debug) System.err.println("tokens:    " + tokened);
+        return tokened;
+>>>>>>> 6417127e1eaab76338f9b5671452d158a021f4a8
     }
     
     public static TokenList<Object> mapTokens(TokenList<Object> tokened) {
@@ -414,10 +517,13 @@ public abstract class ExprParser {
         debug = false;
     }
     
+<<<<<<< HEAD
     public Expr parseSExpr(String input) {
         
         
         return null;
     }
     
+=======
+>>>>>>> 6417127e1eaab76338f9b5671452d158a021f4a8
 }
