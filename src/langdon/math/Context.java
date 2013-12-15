@@ -1,14 +1,9 @@
 package langdon.math;
 
 import java.util.HashMap;
-<<<<<<< HEAD
 import langdon.util.ParseContext;
 
 public class Context implements ParseContext {
-=======
-
-public class Context {
->>>>>>> 6417127e1eaab76338f9b5671452d158a021f4a8
     
     public HashMap<Character, Var> vars = new HashMap<Character, Var>();
     

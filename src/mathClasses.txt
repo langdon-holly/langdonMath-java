@@ -1,13 +1,10 @@
 langdon/util/ArrayLists.java
 langdon/util/ArraySearch.java
-<<<<<<< HEAD
 langdon/util/Token.java
 langdon/util/TokenList.java
 langdon/util/Tokenizer.java
 langdon/util/TokenParser.java
 langdon/util/ParseContext.java
-=======
->>>>>>> 6417127e1eaab76338f9b5671452d158a021f4a8
 langdon/math/Derivative.java
 langdon/math/Expr.java
 langdon/math/Constant.java
@@ -18,11 +15,6 @@ langdon/math/Context.java
 langdon/math/PartialParseExpr.java
 langdon/math/Simple.java
 langdon/math/Function.java
-<<<<<<< HEAD
-=======
-langdon/math/Token.java
-langdon/math/TokenList.java
->>>>>>> 6417127e1eaab76338f9b5671452d158a021f4a8
 langdon/math/E.java
 langdon/math/Pi.java
 langdon/math/Number.java
@@ -35,7 +27,4 @@ langdon/math/Logarithm.java
 langdon/math/Sin.java
 langdon/math/Cos.java
 langdon/math/Undef.java
-<<<<<<< HEAD
 langdon/math/ExprTokenParser.java
-=======
->>>>>>> 6417127e1eaab76338f9b5671452d158a021f4a8
