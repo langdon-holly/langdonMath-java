@@ -6,20 +6,20 @@ public class Token<T> {
     
     public T tokenValue;
     public String fromStr = null;
-    public Integer fromStrOffset = null;
+    public Integer fromStrBegin = null;
     public Integer fromStrEnd = null;
     
-    public Token(T tokenValue, String fromStr, int fromStrOffset, int fromStrEnd) {
+    public Token(T tokenValue, String fromStr, int fromStrBegin, int fromStrEnd) {
         this.tokenValue = tokenValue;
         this.fromStr = fromStr;
-        this.fromStrOffset = fromStrOffset;
+        this.fromStrBegin = fromStrBegin;
         this.fromStrEnd = fromStrEnd;
     }
     
     public Token(T tokenValue, Token fromStrOffsetToken, Token fromStrEndToken) {
         this.tokenValue = tokenValue;
         this.fromStr = fromStrOffsetToken.fromStr;
-        this.fromStrOffset = fromStrOffsetToken.fromStrOffset;
+        this.fromStrBegin = fromStrOffsetToken.fromStrBegin;
         this.fromStrEnd = fromStrEndToken.fromStrEnd;
     }
     
@@ -33,8 +33,8 @@ public class Token<T> {
     
     public String toString() {
         return "([" + tokenValue + "]"
-                + (fromStr != null && fromStrOffset != null && fromStrEnd != null
-                 ? "\"" + fromStr.substring(fromStrOffset, fromStrEnd) + "\"" : "") + ")";
+                + (fromStr != null && fromStrBegin != null && fromStrEnd != null
+                 ? "\"" + fromStr.substring(fromStrBegin, fromStrEnd) + "\"" : "") + ")";
     }
     
     public static <T> ArrayList<T> getValues(ArrayList<Token<T>> tokens) {
@@ -45,8 +45,8 @@ public class Token<T> {
         return values;
     }
     
-    public <T> Token<T> castValueTo(Class<T> toClass) {
-        return new Token<T>((T) tokenValue, fromStr, fromStrOffset, fromStrEnd);
+    public <U> Token<U> castValueTo(Class<U> toClass) {
+        return new Token<U>((U) tokenValue, fromStr, fromStrBegin, fromStrEnd);
     }
     
     public boolean equals(Object o) {

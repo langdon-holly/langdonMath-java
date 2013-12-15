@@ -135,7 +135,7 @@ public abstract class ExprParser {
         int indexOn;
         
         ArrayList<TokenList<Object>> parenContextStack = new ArrayList<TokenList<Object>>();
-        parenContextStack.add(new TokenList<Object>(tokened.fromStrOffset));
+        parenContextStack.add(new TokenList<Object>(tokened.fromStrBegin));
         ArrayList<String> parenStack = new ArrayList<String>();
         parenStack.add("string");
         
@@ -150,7 +150,7 @@ public abstract class ExprParser {
             
             if (tokenValueOn.equals("leftParen")) {
                 if (debug) System.err.println("pushing paren…");
-                parenContextStack.add(new TokenList<Object>(tokenOn.fromStrOffset));
+                parenContextStack.add(new TokenList<Object>(tokenOn.fromStrBegin));
                 parenStack.add("paren");
             }
             else if (tokenValueOn.equals("rightParen")) {
@@ -182,7 +182,7 @@ public abstract class ExprParser {
             }
             else if (tokenValueOn.equals("leftBracket")) {
                 if (debug) System.err.println("pushing bracket…");
-                parenContextStack.add(new TokenList<Object>(tokenOn.fromStrOffset));
+                parenContextStack.add(new TokenList<Object>(tokenOn.fromStrBegin));
                 parenStack.add("bracket");
             }
             else if (tokenValueOn.equals("rightBracket")) {
@@ -219,7 +219,7 @@ public abstract class ExprParser {
     public static Token<Expr> parseLevel(TokenList<Object> tokened, Context context) throws ParseException {
         if (debug) System.err.println("parsing     " + tokened);
         
-        if (tokened.size() == 0) throw new ParseException("token(s) expected, but not found (check your syntax)", tokened.fromStrOffset);
+        if (tokened.size() == 0) throw new ParseException("token(s) expected, but not found (check your syntax)", tokened.fromStrBegin);
         Token<Object> firstToken = tokened.get(0);
         if (tokened.size() == 1 && firstToken.tokenValue instanceof Expr) {
             return firstToken.castValueTo(Expr.class);
@@ -236,9 +236,9 @@ public abstract class ExprParser {
                 Token<Object>[] splitOnA = new Token[]{new Token<Object>("none")};
                 
                 ArrayList<TokenList<Object>> splitted = TokenList.toArrTokenList(ArrayLists.split(tokened, tokenBreakOrder[i], tokenParseDir, splitOnA));
-                if (splitted.get(0).fromStrOffset == null) splitted.get(0).fromStrOffset = tokened.fromStrOffset;
-                if (splitted.get(splitted.size() - 1).fromStrOffset == null) {
-                    splitted.get(splitted.size() - 1).fromStrOffset = tokened.get(tokened.size() - 1).fromStrEnd;
+                if (splitted.get(0).fromStrBegin == null) splitted.get(0).fromStrBegin = tokened.fromStrBegin;
+                if (splitted.get(splitted.size() - 1).fromStrBegin == null) {
+                    splitted.get(splitted.size() - 1).fromStrBegin = tokened.get(tokened.size() - 1).fromStrEnd;
                 }
                 
                 Token<Object> splitOnToken = splitOnA[0];
@@ -328,12 +328,12 @@ public abstract class ExprParser {
                 }
                 else {
                     if (debug) System.err.println(splitOn + " operation not yet supported");
-                    throw new ParseException(splitOn + " operation not yet supported", splitOnToken.fromStrOffset);
+                    throw new ParseException(splitOn + " operation not yet supported", splitOnToken.fromStrBegin);
                 }
             }
         }
         
-        throw new ParseException("no operation found", tokened.fromStrOffset);
+        throw new ParseException("no operation found", tokened.fromStrBegin);
     }
     
 //     public static Subscript parseSubscript (ArrayList<Object> tokened) throws ParseException {
@@ -345,8 +345,8 @@ public abstract class ExprParser {
 //     }
     
     public static TokenList<Object> tokenize(String string, Context context) throws ParseException {
-        Tokenizer tokenizer = new Tokenizer(tokens, new ExprTokenParser());
-        return tokenizer.tokenize(string, context);
+        return new ExprTokenParser(context).parseTokenList(
+                new Tokenizer(tokens).tokenize(string)).castValuesTo(Object.class);
     }
     
     public static TokenList<Object> mapTokens(TokenList<Object> tokened) {
@@ -387,10 +387,10 @@ public abstract class ExprParser {
         
         for (int i = 1; i < tokened.size(); i++) {
             if (tokened.get(i - 1).tokenValue instanceof Expr && tokened.get(i).tokenValue instanceof Expr) {
-                tokened.add(i, new Token<Object>("times", tokened.get(i).fromStr, tokened.get(i).fromStrOffset, tokened.get(i).fromStrOffset));
+                tokened.add(i, new Token<Object>("times", tokened.get(i).fromStr, tokened.get(i).fromStrBegin, tokened.get(i).fromStrBegin));
             }
             else if (tokened.get(i - 1).tokenValue instanceof Expr && tokened.get(i).valueEquals("minus")) {
-                tokened.add(i, new Token<Object>("plus", tokened.get(i).fromStr, tokened.get(i).fromStrOffset, tokened.get(i).fromStrOffset));
+                tokened.add(i, new Token<Object>("plus", tokened.get(i).fromStr, tokened.get(i).fromStrBegin, tokened.get(i).fromStrBegin));
             }
         }
         

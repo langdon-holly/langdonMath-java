@@ -5,7 +5,7 @@ import java.text.ParseException;
 
 import langdon.util.*;
 
-public class ExprTokenParser implements TokenParser {
+public class ExprTokenParser extends TokenParser {
 
     public Context context;
     
@@ -17,39 +17,43 @@ public class ExprTokenParser implements TokenParser {
         this.context = context;
     }
     
-    public Token parseToken(String tokenString, String matched, ParseContext parseContext,
-            String origString, int begin, int end) throws ParseException {
+    public Token<?> parseToken(Token<?> token, ParseContext parseContext) throws ParseException {
         if (!(parseContext instanceof Context)) throw new IllegalArgumentException();
         context = (Context) parseContext;
-        return parseToken(tokenString, matched, origString, begin, end);
+        return parseToken(token);
     }
     
     
-    public Token parseToken(String tokenString, String matched,
-            String origString, int begin, int end) throws ParseException {
-        if (tokenString.equals("piWord")) {
+    public Token<?> parseToken(Token<?> token) throws ParseException {
+        Object tokenValue = token.tokenValue;
+        String origString = token.fromStr;
+        int begin = token.fromStrBegin;
+        int end = token.fromStrEnd;
+        String matched = origString.substring(begin, end);
+        
+        if (tokenValue.equals("piWord")) {
             return new Token<Object>(new Pi(), origString, begin, end);
         }
-        else if (tokenString.equals("e")) {
+        else if (tokenValue.equals("e")) {
             return new Token<Object>(new E(), origString, begin, end);
         }
-        else if (tokenString.equals("lonely-E")) {
+        else if (tokenValue.equals("lonely-E")) {
             throw new ParseException("E is lonely", begin);
         }
-        else if (tokenString.equals("lonely-d")) {
+        else if (tokenValue.equals("lonely-d")) {
             throw new ParseException("d is lonely", begin);
         }
-        else if (tokenString.equals("i")) {
+        else if (tokenValue.equals("i")) {
             // if (debug) System.err.println("i am not yet supported");
             throw new ParseException("i am not yet supported", begin);
         }
-        else if (tokenString.equals("var")) {
+        else if (tokenValue.equals("var")) {
             return new Token<Object>(context.getVar(matched.charAt(0)), origString, begin, end);
         }
-        else if (tokenString.equals("number")) {
+        else if (tokenValue.equals("number")) {
             return new Token<Object>(langdon.math.Number.make(Double.parseDouble(matched)), origString, begin, end);
         }
-        else if (tokenString.equals("derivativeFunc")) {
+        else if (tokenValue.equals("derivativeFunc")) {
             Pattern pattern1 = Pattern.compile("^d(?:\\^(\\d+))?/d([a-zA-Z])(?:\\^(\\d+))?$");
             Matcher matcher1 = pattern1.matcher(matched);
             matcher1.find();
@@ -66,7 +70,7 @@ public class ExprTokenParser implements TokenParser {
             partial.put("degree", Integer.parseInt(firstNum));
             return new Token<Object>(partial, origString, begin, end);
         }
-        else if (tokenString.equals("varDerivative")) {
+        else if (tokenValue.equals("varDerivative")) {
             Pattern pattern1 = Pattern.compile("^d(?:\\^(\\d+))?([a-zA-Z])/d([a-zA-Z])(?:\\^(\\d+))?$");
             Matcher matcher1 = pattern1.matcher(matched);
             matcher1.find();
@@ -81,7 +85,7 @@ public class ExprTokenParser implements TokenParser {
             if (firstNum == null || lastNum == null || Integer.parseInt(firstNum) != Integer.parseInt(lastNum)) throw new ParseException("derivative degrees don't match", begin);
             return new Token<Object>(Derivative.make(context.getVar(var.charAt(0)), context.getVar(character.charAt(0)), Integer.parseInt(firstNum)), origString, begin, end);
         }
-        else if (tokenString.equals("undef")) {
+        else if (tokenValue.equals("undef")) {
             return new Token<Object>(new Undef(), origString, begin, end);
         }
         

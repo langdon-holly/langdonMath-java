@@ -5,21 +5,21 @@ import java.util.Collection;
 
 public class TokenList<T> extends ArrayList<Token<T>> {
     
-    public Integer fromStrOffset = null;
+    public Integer fromStrBegin = null;
     
-    public TokenList(int fromStrOffset) {
+    public TokenList(int fromStrBegin) {
         super();
-        this.fromStrOffset = fromStrOffset;
+        this.fromStrBegin = fromStrBegin;
     }
     
-    public TokenList(Collection<Token<T>> tokens, int fromStrOffset) {
+    public TokenList(Collection<Token<T>> tokens, int fromStrBegin) {
         super(tokens);
-        this.fromStrOffset = fromStrOffset;
+        this.fromStrBegin = fromStrBegin;
     }
     
     public TokenList(Collection<Token<T>> tokens) {
         super(tokens);
-        if (size() > 0) fromStrOffset = get(0).fromStrOffset;
+        if (size() > 0) fromStrBegin = get(0).fromStrBegin;
     }
     
     public static <T> ArrayList<TokenList<T>> toArrTokenList(Collection<ArrayList<Token<T>>> tokenArrArr) {
@@ -28,6 +28,14 @@ public class TokenList<T> extends ArrayList<Token<T>> {
             tokenListList.add(new TokenList<T>(tokenArr));
         }
         return tokenListList;
+    }
+    
+    public <U> TokenList<U> castValuesTo(Class<U> toClass) {
+        TokenList<U> newTokenList = new TokenList(fromStrBegin);
+        for (Token<T> token : this) {
+            newTokenList.add(token.castValueTo(toClass));
+        }
+        return newTokenList;
     }
     
 }
