@@ -5,6 +5,9 @@ langdon/util/TokenList.java
 langdon/util/Tokenizer.java
 langdon/util/TokenParser.java
 langdon/util/ParseContext.java
+langdon/util/LevelsParser.java
+langdon/util/LevelParser.java
+langdon/util/AfterLevelPopHandler.java
 langdon/math/Derivative.java
 langdon/math/Expr.java
 langdon/math/Constant.java
@@ -28,3 +31,5 @@ langdon/math/Sin.java
 langdon/math/Cos.java
 langdon/math/Undef.java
 langdon/math/ExprTokenParser.java
+langdon/math/ExprLevelParser.java
+langdon/math/ParenFunctioning.java

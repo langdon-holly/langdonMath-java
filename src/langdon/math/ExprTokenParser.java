@@ -9,22 +9,18 @@ public class ExprTokenParser extends TokenParser {
 
     public Context context;
     
-    public ExprTokenParser() {
-        this.context = null;
-    }
-    
     public ExprTokenParser(Context context) {
         this.context = context;
     }
     
-    public Token<?> parseToken(Token<?> token, ParseContext parseContext) throws ParseException {
+    public Token<Object> parseToken(Token<?> token, ParseContext parseContext) throws ParseException {
         if (!(parseContext instanceof Context)) throw new IllegalArgumentException();
         context = (Context) parseContext;
         return parseToken(token);
     }
     
     
-    public Token<?> parseToken(Token<?> token) throws ParseException {
+    public Token<Object> parseToken(Token<?> token) throws ParseException {
         Object tokenValue = token.tokenValue;
         String origString = token.fromStr;
         int begin = token.fromStrBegin;
@@ -89,7 +85,7 @@ public class ExprTokenParser extends TokenParser {
             return new Token<Object>(new Undef(), origString, begin, end);
         }
         
-        return null;
+        return token.castValueTo(Object.class);
     }
     
 }
