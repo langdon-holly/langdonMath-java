@@ -8,6 +8,7 @@ langdon/util/ParseContext.java
 langdon/util/LevelsParser.java
 langdon/util/LevelParser.java
 langdon/util/AfterLevelPopHandler.java
+langdon/util/TokenListMapper.java
 langdon/math/Derivative.java
 langdon/math/Expr.java
 langdon/math/Constant.java

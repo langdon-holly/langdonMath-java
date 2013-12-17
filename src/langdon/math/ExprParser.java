@@ -72,7 +72,8 @@ public abstract class ExprParser {
     }
     
     public static Expr parseExpr(String string, Context context) throws ParseException {
-        return parseExpr(mapTokens(new ExprTokenParser(context).parseTokenList(
+        return parseExpr(new TokenListMapper(tokenMap).mapTokens(
+                new ExprTokenParser(context).parseTokenList(
                 new Tokenizer(tokens).tokenize(string))), context);
     }
     
@@ -90,39 +91,6 @@ public abstract class ExprParser {
         return new LevelsParser(levelDelims, new ExprLevelParser(context))
                 .withAfterPopHandler(new ParenFunctioning()).parseLevels(tokened)
                 .castValueTo(Expr.class);
-    }
-    
-    public static TokenList<Object> mapTokens(TokenList<Object> tokened) {
-        // if (debug) System.err.println("mapping tokens…");
-        tokened = (TokenList<Object>) tokened.clone();
-        int indexOn;
-        
-        indexOn = 0;
-        while (indexOn < tokened.size()) {
-            Token<Object> tokenOn = tokened.get(indexOn);
-            Object tokenValueOn = tokenOn.tokenValue;
-            // if (debug) System.err.println("on token: "+tokenOn);
-            
-            if (tokenValueOn instanceof String && tokenMap.containsKey(tokenValueOn)) {
-                List<Token<Object>> subList = tokened.subList(indexOn, indexOn + 1);
-                String[] replacement = tokenMap.get(tokenValueOn);
-                Token<Object>[] replacementTokens = new Token[replacement.length];
-                for (int i = 0; i < replacement.length; i++) {
-                    replacementTokens[i] = new Token<Object>(replacement[i], tokenOn, tokenOn);
-                }
-                
-                subList.clear();
-                subList.addAll(Arrays.asList(replacementTokens));
-                
-                indexOn--;
-            }
-            
-            indexOn++;
-        }
-        
-        if (debug) System.err.println("mapped to: " + tokened);
-        // if (debug) System.err.println("…done mapping tokens");
-        return tokened;
     }
     
     public static String generateParseMesg(String input, ParseException e) {
