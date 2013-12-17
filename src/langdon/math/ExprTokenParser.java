@@ -13,7 +13,6 @@ public class ExprTokenParser extends TokenParser {
         this.context = context;
     }
     
-    
     public Token<Object> parseToken(Token<?> token) throws ParseException {
         Object tokenValue = token.tokenValue;
         String origString = token.fromStr;
