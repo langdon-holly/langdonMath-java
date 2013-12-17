@@ -70,7 +70,10 @@ public class LevelsParser {
                 tokenPair[1] = tokenOn;
                 if (!validDelims(tokenPair)) throw new ParseException("unopened level", indexOn);
                 
-                parenContextStack.get(parenContextStack.size() - 2).add(levelParser.parseLevel(tokenPair, parenContextStack.remove(parenContextStack.size() - 1)));
+                parenContextStack.get(parenContextStack.size() - 2).add(levelParser.parseLevel(
+                        tokenPair, parenContextStack.remove(parenContextStack.size() - 1))
+                        .expandIndices(tokenPair[0].fromStrPart().length(),
+                                       tokenPair[1].fromStrPart().length()));
                 parenStack.remove(parenStack.size() - 1);
                 
                 if (afterPopHandler != null) parenContextStack.set(parenContextStack.size() - 1,

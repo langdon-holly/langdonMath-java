@@ -57,4 +57,14 @@ public class Token<T> {
         return ((Token) o).tokenValue.equals(this.tokenValue);
     }
     
+    public Token expandIndices(int left, int right) {
+        fromStrBegin-= left;
+        fromStrEnd+= right;
+        return this;
+    }
+    
+    public String fromStrPart() {
+        return fromStr.substring(fromStrBegin, fromStrEnd);
+    }
+    
 }
