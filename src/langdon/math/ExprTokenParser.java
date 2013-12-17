@@ -13,12 +13,6 @@ public class ExprTokenParser extends TokenParser {
         this.context = context;
     }
     
-    public Token<Object> parseToken(Token<?> token, ParseContext parseContext) throws ParseException {
-        if (!(parseContext instanceof Context)) throw new IllegalArgumentException();
-        context = (Context) parseContext;
-        return parseToken(token);
-    }
-    
     
     public Token<Object> parseToken(Token<?> token) throws ParseException {
         Object tokenValue = token.tokenValue;
@@ -27,7 +21,7 @@ public class ExprTokenParser extends TokenParser {
         int end = token.fromStrEnd;
         String matched = origString.substring(begin, end);
         
-        if (tokenValue.equals("piWord")) {
+        if (tokenValue.equals("piWord") || tokenValue.equals("pi")) {
             return new Token<Object>(new Pi(), origString, begin, end);
         }
         else if (tokenValue.equals("e")) {
