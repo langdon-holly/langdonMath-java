@@ -14,7 +14,7 @@ public abstract class ExprParser {
     
     public static void main(String[] args) {
         try {
-            Expr expr = parse(args[0]);
+            Expr expr = parseExpr(args[0]);
             System.out.println(expr);
         } catch (ParseException e) {
             System.err.println(generateParseMesg(args[0], e));
@@ -67,17 +67,17 @@ public abstract class ExprParser {
     
     private static boolean debug = true;
     
-    public static Expr parse(String string) throws ParseException {
-        return parse(string, new Context());
+    public static Expr parseExpr(String string) throws ParseException {
+        return parseExpr(string, new Context());
     }
     
-    public static Expr parse(String string, Context context) throws ParseException {
+    public static Expr parseExpr(String string, Context context) throws ParseException {
         return parseExpr(mapTokens(new ExprTokenParser(context).parseTokenList(
                 new Tokenizer(tokens).tokenize(string))), context);
     }
     
-//     public static Expr parse(ArrayList<Object> tokened) throws ParseException {
-//         return parse(tokened, new Context());
+//     public static Expr parseExpr(ArrayList<Object> tokened) throws ParseException {
+//         return parseExpr(tokened, new Context());
 //     }
     
     public static Expr parseExpr(TokenList<Object> tokened, Context context) throws ParseException {
