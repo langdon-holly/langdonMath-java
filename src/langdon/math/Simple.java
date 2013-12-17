@@ -130,9 +130,9 @@ public class Simple {
                     String exprS = string.substring(0, string.indexOf('='));
                     String subS = string.substring(string.indexOf('=') + 1, string.length());
                     try {
-                        Expr expr = ExprParser.parse(exprS, context);
+                        Expr expr = ExprParser.parseExpr(exprS, context);
                         try {
-                            Expr sub = ExprParser.parse(subS, context);
+                            Expr sub = ExprParser.parseExpr(subS, context);
                             context.subs.put(expr, sub);
                         } catch (Exception e) {
                             System.err.println("\"" + subS + "\" could not be parsed:");
@@ -169,7 +169,7 @@ public class Simple {
                 }
             }
             
-            expression = ExprParser.parse(complex, context);
+            expression = ExprParser.parseExpr(complex, context);
             if (debug) System.err.println("Simple.simplify: before substitution: " + expression);
             expression = expression.copy(context.subs);
             if (debug) System.err.println("Simple.simplify: after substitution:  " + expression);

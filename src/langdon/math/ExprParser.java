@@ -92,10 +92,6 @@ public abstract class ExprParser {
                 .castValueTo(Expr.class);
     }
     
- //    public static Expr parseLevel(ArrayList<Object> tokened) throws ParseException {
-//         return parseLevel(tokened, new Context());
-//     }
-    
     public static TokenList<Object> mapTokens(TokenList<Object> tokened) {
         // if (debug) System.err.println("mapping tokens…");
         tokened = (TokenList<Object>) tokened.clone();
