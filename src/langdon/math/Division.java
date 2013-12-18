@@ -26,6 +26,10 @@ public class Division extends Operation {
         return division;
     }
     
+    public static Expr make(ArrayList<? extends Expr> exprs) {
+        return make(exprs.get(0), exprs.get(1));
+    }
+    
     public Expr deriv(Var inTermsOf) {
         return make(Sum.make(Product.make(denom, numerator.deriv(inTermsOf)), Product.make(Number.make(-1d), Product.make(numerator, denom.deriv(inTermsOf)))), Exponent.make(denom, Number.make(2d)));
     }

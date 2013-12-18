@@ -21,7 +21,7 @@ public abstract class ExprParser {
         }
     }
     
-    public static final String[][] tokens
+    public static String[][] tokens
             = {{"\\s+","space"},
                {"d(\\^\\d+)?[a-zA-Z]/d[a-zA-Z](\\^\\d+)?","varDerivative"},
                {"d(\\^\\d+)?/d[a-zA-Z](\\^\\d+)?","derivativeFunc"},
@@ -53,7 +53,20 @@ public abstract class ExprParser {
                {"\\]", "rightBracket"},
                {"\\^", "exponentCaret"}};
     
-    public static final HashMap<String,String[]> tokenMap = new HashMap<String,String[]>();
+    public static String[][] sExprTokens
+            = {{"\\s+","space"},
+               {"undef", "undef"},
+               {"pi", "piWord"},
+               {"e", "e"},
+               {"i", "i"},
+               {"π", "pi"},
+               {"[a-zA-Z][a-zA-Z]+", "func"},
+               {"[a-zA-Z]", "var"}, // (?![a-zA-Z])
+               {"(\\d+(\\.\\d+)?|\\.\\d+)(E(\\+|-)?\\d+)?", "number"},
+               {"\\(", "leftParen"},
+               {"\\)", "rightParen"}};
+    
+    public static HashMap<String,String[]> tokenMap = new HashMap<String,String[]>();
     static {
         tokenMap.put("space", new String[]{});
         tokenMap.put("minusHyph", new String[]{"minus"});
@@ -63,7 +76,17 @@ public abstract class ExprParser {
         tokenMap.put("piWord", new String[]{"pi"});
     }
     
-    private static final String noTokenMsg = "invalid token";
+    public static HashMap<String,String[]> sExprTokenMap = new HashMap<String,String[]>();
+    static {
+        tokenMap.put("piWord", new String[]{"pi"});
+    }
+    
+    public static Token[][] levelDelims = {{new Token<Object>("leftParen"), new Token<Object>("rightParen")},
+                                           {new Token<Object>("leftBracket"), new Token<Object>("rightBracket")}};
+    
+    public static Token[][] sExprLevelDelims = {{new Token<Object>("leftParen"), new Token<Object>("rightParen")}};
+    
+    private static String noTokenMsg = "invalid token";
     
     private static boolean debug = true;
     
@@ -86,8 +109,6 @@ public abstract class ExprParser {
     }
     
     public static Token<Expr> parse(TokenList<Object> tokened, Context context) throws ParseException {
-        Token[][] levelDelims = {{new Token<Object>("leftParen"), new Token<Object>("rightParen")},
-                                 {new Token<Object>("leftBracket"), new Token<Object>("rightBracket")}};
         return new LevelsParser(levelDelims, new ExprLevelParser(context))
                 .withAfterPopHandler(new ParenFunctioning()).parseLevels(tokened)
                 .castValueTo(Expr.class);
@@ -109,10 +130,24 @@ public abstract class ExprParser {
         debug = false;
     }
     
-    public Expr parseSExpr(String input) {
-        
-        
-        return null;
+    public static Expr parseSExprExpr(String string) throws ParseException {
+        return parseSExprExpr(string, new Context());
+    }
+    
+    public static Expr parseSExprExpr(String string, Context context) throws ParseException {
+        return parseSExprExpr(new TokenListMapper(sExprTokenMap).mapTokens(
+                new SExprTokenParser(context).parseTokenList(
+                new Tokenizer(sExprTokens).tokenize(string))), context);
+    }
+    
+    public static Expr parseSExprExpr(TokenList<?> tokened, Context context) throws ParseException {
+        return parseSExpr(tokened, context).tokenValue;
+    }
+    
+    public static Token<Expr> parseSExpr(TokenList<?> tokened, Context context) throws ParseException {
+        return new LevelsParser(sExprLevelDelims, new SExprLevelParser(context))
+                .parseLevels(tokened)
+                .castValueTo(Expr.class);
     }
     
 }

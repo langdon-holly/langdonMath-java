@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Pattern;
+import java.text.ParseException;
 
 public class Simple {
         
@@ -15,6 +16,7 @@ public class Simple {
     
     private  boolean debugAll = false;
     private  String interfaceStyle = "interactive";
+    private  String inputFormat = "pretty";
     private  String outputFormat = "pretty";
     private  boolean dispSource = false;
     
@@ -55,6 +57,10 @@ public class Simple {
                 }
                 else if (option.equals("P")) {
                     interfaceStyle = "interactive";
+                }
+                else if (option.equals("i")) {
+                    argOn++;
+                    if (argOn < argStrs.size()) inputFormat = argStrs.get(argOn);
                 }
                 else if (option.equals("o")) {
                     argOn++;
@@ -130,9 +136,9 @@ public class Simple {
                     String exprS = string.substring(0, string.indexOf('='));
                     String subS = string.substring(string.indexOf('=') + 1, string.length());
                     try {
-                        Expr expr = ExprParser.parseExpr(exprS, context);
+                        Expr expr = parseExpr(exprS, context);
                         try {
-                            Expr sub = ExprParser.parseExpr(subS, context);
+                            Expr sub = parseExpr(subS, context);
                             context.subs.put(expr, sub);
                         } catch (Exception e) {
                             System.err.println("\"" + subS + "\" could not be parsed:");
@@ -169,7 +175,7 @@ public class Simple {
                 }
             }
             
-            expression = ExprParser.parseExpr(complex, context);
+            expression = parseExpr(complex, context);
             if (debug) System.err.println("Simple.simplify: before substitution: " + expression);
             expression = expression.copy(context.subs);
             if (debug) System.err.println("Simple.simplify: after substitution:  " + expression);
@@ -196,6 +202,12 @@ public class Simple {
     
     private void noDebug() {
         debug = false;
+    }
+    
+    private Expr parseExpr(String string, Context context) throws ParseException {
+        if (inputFormat.equals("pretty")) return ExprParser.parseExpr(string, context);
+        if (inputFormat.equals("s-expr")) return ExprParser.parseSExprExpr(string, context);
+        else return ExprParser.parseExpr(string, context);
     }
     
 }

@@ -18,6 +18,10 @@ public class Cos extends Function {
         return cos.simplify();
     }
     
+    public static Expr make(ArrayList<? extends Expr> exprs) {
+        return make(exprs.get(0));
+    }
+    
     public Expr deriv(Var inTermsOf) {
         return Product.make(ofExpr.deriv(inTermsOf), Product.negative(Sin.make(ofExpr)));
     }

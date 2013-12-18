@@ -20,6 +20,10 @@ public class Logarithm extends Function {
         return log.simplify();
     }
     
+    public static Expr make(ArrayList<? extends Expr> exprs) {
+        return make(exprs.get(0), exprs.get(1));
+    }
+    
     public Expr ofExpr() {
         return ofExpr;
     }

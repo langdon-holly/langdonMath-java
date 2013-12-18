@@ -11,15 +11,15 @@ public class Product extends Operation {
     
     private ArrayList<Expr> exprs;
     
-    private Product(Collection<? extends Expr> exprs) {
-        this.exprs = new ArrayList<Expr>(exprs);
+    private <E extends Expr> Product(ArrayList<E> exprs) {
+        this.exprs = ArrayLists.castAll(exprs, Expr.class);
     }
     
-    public static Expr make(Collection<? extends Expr> exprs) {
+    public static Expr make(ArrayList<? extends Expr> exprs) {
         return make(exprs, true);
     }
     
-    public static Expr make(Collection<? extends Expr> exprs, boolean simplify) {
+    public static Expr make(ArrayList<? extends Expr> exprs, boolean simplify) {
         Product product = new Product(exprs);
         return simplify ? product.simplify() : product;
     }
@@ -51,7 +51,7 @@ public class Product extends Operation {
             return Sum.make(Product.make(exprs.get(0), exprs.get(1).deriv(inTermsOf)), Product.make(exprs.get(0).deriv(inTermsOf), exprs.get(1)));
         }
         // if (debug) System.err.println(ArrayLists.dumpAll(exprs));
-        return Product.make(new Product(exprs.subList(0, exprs.size() - 1)), exprs.get(exprs.size() - 1), false).deriv(inTermsOf);
+        return Product.make(new Product(new ArrayList<Expr>(exprs.subList(0, exprs.size() - 1))), exprs.get(exprs.size() - 1), false).deriv(inTermsOf);
     }
     
     public ArrayList<Expr> getExprs() {

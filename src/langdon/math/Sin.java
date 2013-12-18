@@ -46,6 +46,10 @@ public class Sin extends Function {
         return sin.simplify();
     }
     
+    public static Expr make(ArrayList<? extends Expr> exprs) {
+        return make(exprs.get(0));
+    }
+    
     public Expr deriv(Var inTermsOf) {
         return Product.make(ofExpr.deriv(inTermsOf), Cos.make(ofExpr));
     }

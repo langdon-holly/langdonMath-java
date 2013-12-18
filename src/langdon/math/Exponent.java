@@ -26,6 +26,10 @@ public class Exponent extends Operation {
         return simplify ? exp.simplify() : exp;
     }
     
+    public static Expr make(ArrayList<? extends Expr> exprs) {
+        return make(exprs.get(0), exprs.get(1));
+    }
+    
     public Expr deriv(Var inTermsOf) {
         if (exponent.isConstant()) {
             ArrayList<Expr> tmp = new ArrayList<Expr>();

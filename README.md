@@ -16,7 +16,8 @@ first, options:
 `-D`       turns off Debugging (default)  
 `-p`       switches to Plain printing style  
 `-P`       switches to interactive printing style (default)  
-`-o outputFormat`  switches to Output format outputFormat (like "pretty" or "dump")  
+`-i inputFormat`  switches to Input format inputFormat (like "pretty" or "s-expr") 
+`-o outputFormat`  switches to Output format outputFormat (like "pretty" or "s-expr")  
 `-e expr`  simplifies the mathematical Expression expr  
 then (optional):  
 `-- [expr1, [expr2, ...]]` (some mathematical expressions to simplify)  
@@ -43,7 +44,7 @@ log[-2] 2 = undef
 ```
 
 ```
-$ java langdon.math.Simple -o dump -- 2 e d/dx2cx
+$ java langdon.math.Simple -o s-expr -- 2 e d/dx2cx
 2 = 2
 e = e
 d/dx2cx = (Sum (Product 2 c) (Product 2 (Derivative c x) x))
@@ -64,7 +65,7 @@ a=b; d/db dy/da = d^2y/db^2
 ```
 
 ```
-$ java langdon.math.Simple -ds dump -e '7x^3'
+$ java langdon.math.Simple -do s-expr -e '7x^3'
 tokenizing "7x^3"
 tokens:    [([7]"7"), ([x]"x"), ([exponentCaret]"^"), ([3]"3")]
 mapped to: [([7]"7"), ([x]"x"), ([exponent]"^"), ([3]"3")]

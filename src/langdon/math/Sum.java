@@ -21,11 +21,11 @@ public class Sum extends Operation {
     
     private ArrayList<Expr> exprs;
     
-    private Sum(Collection<? extends Expr> exprs) {
-        this.exprs = new ArrayList<Expr>(exprs);
+    private Sum(ArrayList<? extends Expr> exprs) {
+        this.exprs = ArrayLists.castAll(exprs, Expr.class);
     }
     
-    public static Expr make(Collection<? extends Expr> exprs) {
+    public static Expr make(ArrayList<? extends Expr> exprs) {
         return new Sum(exprs).simplify();
     }
     

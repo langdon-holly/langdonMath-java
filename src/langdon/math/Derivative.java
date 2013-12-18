@@ -33,6 +33,10 @@ public class Derivative extends Function {
         return ofExpr;
     }
     
+    public static Expr make(ArrayList<? extends Expr> exprs) {
+        return make(exprs.get(0), (Var) exprs.get(1));
+    }
+    
     private Expr simplify() {
         if (hasUndef()) return new Undef();
         if (!(ofExpr instanceof Derivative)) {

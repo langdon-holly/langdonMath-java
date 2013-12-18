@@ -316,7 +316,7 @@ public abstract class Expr {
     }
     
     public String toString(String format) {
-        if (format.equals("dump")) return dump();
+        if (format.equals("s-expr")) return dump();
         if (format.equals("pretty")) return pretty();
         return toString();
     }
