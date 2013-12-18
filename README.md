@@ -16,7 +16,7 @@ first, options:
 `-D`       turns off Debugging (default)  
 `-p`       switches to Plain printing style  
 `-P`       switches to interactive printing style (default)  
-`-i inputFormat`  switches to Input format inputFormat (like "pretty" or "s-expr") 
+`-i inputFormat`  switches to Input format inputFormat (like "pretty" or "s-expr")  
 `-o outputFormat`  switches to Output format outputFormat (like "pretty" or "s-expr")  
 `-e expr`  simplifies the mathematical Expression expr  
 then (optional):  
