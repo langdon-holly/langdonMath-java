@@ -11,7 +11,7 @@ Including: automatic simplification of a lot of stuff (when precision would not 
 Command-line Arguments for langdon.math.Simple
 ----------------------------------------------
 
-first, options:
+first, options:  
 `-d`       turns on Debugging  
 `-D`       turns off Debugging (default)  
 `-p`       switches to Plain printing style  
