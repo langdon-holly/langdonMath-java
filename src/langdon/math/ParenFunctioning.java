@@ -54,4 +54,9 @@ public class ParenFunctioning implements AfterLevelPopHandler {
         return currentLevel;
     }
     
+    public ParenFunctioning withDebug(boolean debug) {
+        this.debug = debug;
+        return this;
+    }
+    
 }

@@ -76,11 +76,6 @@ public abstract class ExprParser {
         tokenMap.put("piWord", new String[]{"pi"});
     }
     
-    public static HashMap<String,String[]> sExprTokenMap = new HashMap<String,String[]>();
-    static {
-        tokenMap.put("piWord", new String[]{"pi"});
-    }
-    
     public static Token[][] levelDelims = {{new Token<Object>("leftParen"), new Token<Object>("rightParen")},
                                            {new Token<Object>("leftBracket"), new Token<Object>("rightBracket")}};
     
@@ -95,9 +90,9 @@ public abstract class ExprParser {
     }
     
     public static Expr parseExpr(String string, Context context) throws ParseException {
-        return parseExpr(new TokenListMapper(tokenMap).mapTokens(
-                new ExprTokenParser(context).parseTokenList(
-                new Tokenizer(tokens).tokenize(string))), context);
+        return parseExpr(new TokenListMapper(tokenMap).withDebug(debug).mapTokens(
+                new ExprTokenParser(context).withDebug(debug).parseTokenList(
+                new Tokenizer(tokens).withDebug(debug).tokenize(string))), context);
     }
     
 //     public static Expr parseExpr(ArrayList<Object> tokened) throws ParseException {
@@ -109,8 +104,8 @@ public abstract class ExprParser {
     }
     
     public static Token<Expr> parse(TokenList<Object> tokened, Context context) throws ParseException {
-        return new LevelsParser(levelDelims, new ExprLevelParser(context))
-                .withAfterPopHandler(new ParenFunctioning()).parseLevels(tokened)
+        return new LevelsParser(levelDelims, new ExprLevelParser(context).withDebug(debug)).withDebug(debug)
+                .withAfterPopHandler(new ParenFunctioning().withDebug(debug)).parseLevels(tokened)
                 .castValueTo(Expr.class);
     }
     
@@ -135,9 +130,8 @@ public abstract class ExprParser {
     }
     
     public static Expr parseSExprExpr(String string, Context context) throws ParseException {
-        return parseSExprExpr(new TokenListMapper(sExprTokenMap).mapTokens(
-                new SExprTokenParser(context).parseTokenList(
-                new Tokenizer(sExprTokens).tokenize(string))), context);
+        return parseSExprExpr(new SExprTokenParser(context).withDebug(debug).parseTokenList(
+                new Tokenizer(sExprTokens).withDebug(debug).tokenize(string)), context);
     }
     
     public static Expr parseSExprExpr(TokenList<?> tokened, Context context) throws ParseException {
@@ -145,7 +139,7 @@ public abstract class ExprParser {
     }
     
     public static Token<Expr> parseSExpr(TokenList<?> tokened, Context context) throws ParseException {
-        return new LevelsParser(sExprLevelDelims, new SExprLevelParser(context))
+        return new LevelsParser(sExprLevelDelims, new SExprLevelParser(context).withDebug(debug)).withDebug(debug)
                 .parseLevels(tokened)
                 .castValueTo(Expr.class);
     }

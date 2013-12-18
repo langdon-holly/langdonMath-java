@@ -57,4 +57,9 @@ public class Tokenizer {
         return tokened;
     }
     
+    public Tokenizer withDebug(boolean debug) {
+        this.debug = debug;
+        return this;
+    }
+    
 }

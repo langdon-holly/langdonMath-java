@@ -50,7 +50,7 @@ public class LevelsParser {
         while (indexOn < tokened.size()) {
             if (debug) System.err.println("--------------");
             if (debug) System.err.println("contexts: " + parenContextStack);
-            if (debug) System.err.println("parens:   " + parenStack);
+            if (debug) System.err.println("levels:   " + parenStack);
             Token<Object> tokenOn = tokened.get(indexOn).castValueTo(Object.class);
             Object tokenValueOn = tokenOn.tokenValue;
             if (debug) System.err.println("token:    " + tokenOn);
@@ -80,23 +80,8 @@ public class LevelsParser {
                         afterPopHandler.handleAfterPop(tokenPair, parenContextStack.get(
                             parenContextStack.size() - 1), levelParser));
                 
-                if (debug) System.err.println("…popped paren");
+                if (debug) System.err.println("…popped level");
             }
-//             else if (tokenValueOn.equals("leftBracket")) {
-//                 if (debug) System.err.println("pushing bracket…");
-//                 parenContextStack.add(new TokenList<Object>(tokenOn.fromStrBegin));
-//                 parenStack.add("bracket");
-//             }
-//             else if (tokenValueOn.equals("rightBracket")) {
-//                 if (debug) System.err.println("popping bracket…");
-//                 if (!parenStack.get(parenStack.size() - 1).equals("bracket")) {
-//                     throw new ParseException("unopened bracket", indexOn);
-//                 }
-//                 Token<Expr> subscript = parseLevel(parenContextStack.remove(parenContextStack.size() - 1), context);
-//                 parenContextStack.get(parenContextStack.size() - 1).add(new Token<Subscript>(new Subscript(subscript.tokenValue), subscript, subscript).castValueTo(Object.class));
-//                 parenStack.remove(parenStack.size() - 1);
-//                 if (debug) System.err.println("…popped bracket");
-//             }
             else {
                 parenContextStack.get(parenContextStack.size() - 1).add(tokenOn);
             }
@@ -112,5 +97,10 @@ public class LevelsParser {
         }
         
         return bigToken;
+    }
+    
+    public LevelsParser withDebug(boolean debug) {
+        this.debug = debug;
+        return this;
     }
 }

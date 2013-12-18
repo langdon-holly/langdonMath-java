@@ -47,4 +47,9 @@ public class TokenListMapper {
         return tokened;
     }
     
+    public TokenListMapper withDebug(boolean debug) {
+        this.debug = debug;
+        return this;
+    }
+    
 }

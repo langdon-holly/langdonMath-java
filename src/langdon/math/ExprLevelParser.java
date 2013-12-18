@@ -196,4 +196,9 @@ public class ExprLevelParser implements LevelParser {
         return tokened;
     }
     
+    public ExprLevelParser withDebug(boolean debug) {
+        this.debug = debug;
+        return this;
+    }
+    
 }

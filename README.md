@@ -65,25 +65,31 @@ a=b; d/db dy/da = d^2y/db^2
 ```
 
 ```
+$ java langdon.math.Simple -i s-expr -e '(Division (Derivative (Logarithm e (Product 2 x)) x) 5)'
+(Division (Derivative (Logarithm e (Product 2 x)) x) 5) = 0.2/x
+```
+
+```
 $ java langdon.math.Simple -do s-expr -e '7x^3'
 tokenizing "7x^3"
-tokens:    [([7]"7"), ([x]"x"), ([exponentCaret]"^"), ([3]"3")]
+tokens:    [([number]"7"), ([var]"x"), ([exponentCaret]"^"), ([number]"3")]
+parsed to: [([7]"7"), ([x]"x"), ([exponentCaret]"^"), ([3]"3")]
 mapped to: [([7]"7"), ([x]"x"), ([exponent]"^"), ([3]"3")]
 --------------
 contexts: [[]]
-parens:   [string]
+levels:   [([stringBeg])]
 token:    ([7]"7")
 --------------
 contexts: [[([7]"7")]]
-parens:   [string]
+levels:   [([stringBeg])]
 token:    ([x]"x")
 --------------
 contexts: [[([7]"7"), ([x]"x")]]
-parens:   [string]
+levels:   [([stringBeg])]
 token:    ([exponent]"^")
 --------------
 contexts: [[([7]"7"), ([x]"x"), ([exponent]"^")]]
-parens:   [string]
+levels:   [([stringBeg])]
 token:    ([3]"3")
 parsing     [([7]"7"), ([x]"x"), ([exponent]"^"), ([3]"3")]
 altered to: [([7]"7"), ([times]""), ([x]"x"), ([exponent]"^"), ([3]"3")]
@@ -104,27 +110,28 @@ Simple.simplify: after substitution:  (Product 7 (Exponent x 3))
 ```
 $ java langdon.math.Simple -de '3*+/2'
 tokenizing "3*+/2"
-tokens:    [([3]"3"), ([timesAst]"*"), ([plus]"+"), ([divisionSlash]"/"), ([2]"2")]
+tokens:    [([number]"3"), ([timesAst]"*"), ([plus]"+"), ([divisionSlash]"/"), ([number]"2")]
+parsed to: [([3]"3"), ([timesAst]"*"), ([plus]"+"), ([divisionSlash]"/"), ([2]"2")]
 mapped to: [([3]"3"), ([times]"*"), ([plus]"+"), ([division]"/"), ([2]"2")]
 --------------
 contexts: [[]]
-parens:   [string]
+levels:   [([stringBeg])]
 token:    ([3]"3")
 --------------
 contexts: [[([3]"3")]]
-parens:   [string]
+levels:   [([stringBeg])]
 token:    ([times]"*")
 --------------
 contexts: [[([3]"3"), ([times]"*")]]
-parens:   [string]
+levels:   [([stringBeg])]
 token:    ([plus]"+")
 --------------
 contexts: [[([3]"3"), ([times]"*"), ([plus]"+")]]
-parens:   [string]
+levels:   [([stringBeg])]
 token:    ([division]"/")
 --------------
 contexts: [[([3]"3"), ([times]"*"), ([plus]"+"), ([division]"/")]]
-parens:   [string]
+levels:   [([stringBeg])]
 token:    ([2]"2")
 parsing     [([3]"3"), ([times]"*"), ([plus]"+"), ([division]"/"), ([2]"2")]
 altered to: [([3]"3"), ([times]"*"), ([plus]"+"), ([division]"/"), ([2]"2")]
@@ -140,6 +147,150 @@ parsing     []
 parse error: token(s) expected, but not found (check your syntax)
 3*+/2
   ^
+```
+
+```
+$ java langdon.math.Simple -di s-expr -e '(Division (Derivative (Logarithm e (Product 2 x)) x) 5)'
+tokenizing "(Division (Derivative (Logarithm e (Product 2 x)) x) 5)"
+tokens:    [([leftParen]"("), ([func]"Division"), ([space]" "), ([leftParen]"("), ([func]"Derivative"), ([space]" "), ([leftParen]"("), ([func]"Logarithm"), ([space]" "), ([e]"e"), ([space]" "), ([leftParen]"("), ([func]"Product"), ([space]" "), ([number]"2"), ([space]" "), ([var]"x"), ([rightParen]")"), ([rightParen]")"), ([space]" "), ([var]"x"), ([rightParen]")"), ([space]" "), ([number]"5"), ([rightParen]")")]
+parsed to: [([leftParen]"("), ([func]"Division"), ([space]" "), ([leftParen]"("), ([func]"Derivative"), ([space]" "), ([leftParen]"("), ([func]"Logarithm"), ([space]" "), ([e]"e"), ([space]" "), ([leftParen]"("), ([func]"Product"), ([space]" "), ([2]"2"), ([space]" "), ([x]"x"), ([rightParen]")"), ([rightParen]")"), ([space]" "), ([x]"x"), ([rightParen]")"), ([space]" "), ([5]"5"), ([rightParen]")")]
+--------------
+contexts: [[]]
+levels:   [([stringBeg])]
+token:    ([leftParen]"(")
+pushing level on leftParen…
+--------------
+contexts: [[], []]
+levels:   [([stringBeg]), ([leftParen]"(")]
+token:    ([func]"Division")
+--------------
+contexts: [[], [([func]"Division")]]
+levels:   [([stringBeg]), ([leftParen]"(")]
+token:    ([space]" ")
+--------------
+contexts: [[], [([func]"Division"), ([space]" ")]]
+levels:   [([stringBeg]), ([leftParen]"(")]
+token:    ([leftParen]"(")
+pushing level on leftParen…
+--------------
+contexts: [[], [([func]"Division"), ([space]" ")], []]
+levels:   [([stringBeg]), ([leftParen]"("), ([leftParen]"(")]
+token:    ([func]"Derivative")
+--------------
+contexts: [[], [([func]"Division"), ([space]" ")], [([func]"Derivative")]]
+levels:   [([stringBeg]), ([leftParen]"("), ([leftParen]"(")]
+token:    ([space]" ")
+--------------
+contexts: [[], [([func]"Division"), ([space]" ")], [([func]"Derivative"), ([space]" ")]]
+levels:   [([stringBeg]), ([leftParen]"("), ([leftParen]"(")]
+token:    ([leftParen]"(")
+pushing level on leftParen…
+--------------
+contexts: [[], [([func]"Division"), ([space]" ")], [([func]"Derivative"), ([space]" ")], []]
+levels:   [([stringBeg]), ([leftParen]"("), ([leftParen]"("), ([leftParen]"(")]
+token:    ([func]"Logarithm")
+--------------
+contexts: [[], [([func]"Division"), ([space]" ")], [([func]"Derivative"), ([space]" ")], [([func]"Logarithm")]]
+levels:   [([stringBeg]), ([leftParen]"("), ([leftParen]"("), ([leftParen]"(")]
+token:    ([space]" ")
+--------------
+contexts: [[], [([func]"Division"), ([space]" ")], [([func]"Derivative"), ([space]" ")], [([func]"Logarithm"), ([space]" ")]]
+levels:   [([stringBeg]), ([leftParen]"("), ([leftParen]"("), ([leftParen]"(")]
+token:    ([e]"e")
+--------------
+contexts: [[], [([func]"Division"), ([space]" ")], [([func]"Derivative"), ([space]" ")], [([func]"Logarithm"), ([space]" "), ([e]"e")]]
+levels:   [([stringBeg]), ([leftParen]"("), ([leftParen]"("), ([leftParen]"(")]
+token:    ([space]" ")
+--------------
+contexts: [[], [([func]"Division"), ([space]" ")], [([func]"Derivative"), ([space]" ")], [([func]"Logarithm"), ([space]" "), ([e]"e"), ([space]" ")]]
+levels:   [([stringBeg]), ([leftParen]"("), ([leftParen]"("), ([leftParen]"(")]
+token:    ([leftParen]"(")
+pushing level on leftParen…
+--------------
+contexts: [[], [([func]"Division"), ([space]" ")], [([func]"Derivative"), ([space]" ")], [([func]"Logarithm"), ([space]" "), ([e]"e"), ([space]" ")], []]
+levels:   [([stringBeg]), ([leftParen]"("), ([leftParen]"("), ([leftParen]"("), ([leftParen]"(")]
+token:    ([func]"Product")
+--------------
+contexts: [[], [([func]"Division"), ([space]" ")], [([func]"Derivative"), ([space]" ")], [([func]"Logarithm"), ([space]" "), ([e]"e"), ([space]" ")], [([func]"Product")]]
+levels:   [([stringBeg]), ([leftParen]"("), ([leftParen]"("), ([leftParen]"("), ([leftParen]"(")]
+token:    ([space]" ")
+--------------
+contexts: [[], [([func]"Division"), ([space]" ")], [([func]"Derivative"), ([space]" ")], [([func]"Logarithm"), ([space]" "), ([e]"e"), ([space]" ")], [([func]"Product"), ([space]" ")]]
+levels:   [([stringBeg]), ([leftParen]"("), ([leftParen]"("), ([leftParen]"("), ([leftParen]"(")]
+token:    ([2]"2")
+--------------
+contexts: [[], [([func]"Division"), ([space]" ")], [([func]"Derivative"), ([space]" ")], [([func]"Logarithm"), ([space]" "), ([e]"e"), ([space]" ")], [([func]"Product"), ([space]" "), ([2]"2")]]
+levels:   [([stringBeg]), ([leftParen]"("), ([leftParen]"("), ([leftParen]"("), ([leftParen]"(")]
+token:    ([space]" ")
+--------------
+contexts: [[], [([func]"Division"), ([space]" ")], [([func]"Derivative"), ([space]" ")], [([func]"Logarithm"), ([space]" "), ([e]"e"), ([space]" ")], [([func]"Product"), ([space]" "), ([2]"2"), ([space]" ")]]
+levels:   [([stringBeg]), ([leftParen]"("), ([leftParen]"("), ([leftParen]"("), ([leftParen]"(")]
+token:    ([x]"x")
+--------------
+contexts: [[], [([func]"Division"), ([space]" ")], [([func]"Derivative"), ([space]" ")], [([func]"Logarithm"), ([space]" "), ([e]"e"), ([space]" ")], [([func]"Product"), ([space]" "), ([2]"2"), ([space]" "), ([x]"x")]]
+levels:   [([stringBeg]), ([leftParen]"("), ([leftParen]"("), ([leftParen]"("), ([leftParen]"(")]
+token:    ([rightParen]")")
+popping level on rightParen…
+parsing     [([func]"Product"), ([space]" "), ([2]"2"), ([space]" "), ([x]"x")]
+splitting on {space}
+splitted: [[([func]"Product")], [([2]"2")], [([x]"x")]]
+parsing     [([2]"2")]
+parsing     [([x]"x")]
+…popped level
+--------------
+contexts: [[], [([func]"Division"), ([space]" ")], [([func]"Derivative"), ([space]" ")], [([func]"Logarithm"), ([space]" "), ([e]"e"), ([space]" "), ([(Product 2 x)]"(Product 2 x)")]]
+levels:   [([stringBeg]), ([leftParen]"("), ([leftParen]"("), ([leftParen]"(")]
+token:    ([rightParen]")")
+popping level on rightParen…
+parsing     [([func]"Logarithm"), ([space]" "), ([e]"e"), ([space]" "), ([(Product 2 x)]"(Product 2 x)")]
+splitting on {space}
+splitted: [[([func]"Logarithm")], [([e]"e")], [([(Product 2 x)]"(Product 2 x)")]]
+parsing     [([e]"e")]
+parsing     [([(Product 2 x)]"(Product 2 x)")]
+…popped level
+--------------
+contexts: [[], [([func]"Division"), ([space]" ")], [([func]"Derivative"), ([space]" "), ([(Logarithm e (Product 2 x))]"(Logarithm e (Product 2 x))")]]
+levels:   [([stringBeg]), ([leftParen]"("), ([leftParen]"(")]
+token:    ([space]" ")
+--------------
+contexts: [[], [([func]"Division"), ([space]" ")], [([func]"Derivative"), ([space]" "), ([(Logarithm e (Product 2 x))]"(Logarithm e (Product 2 x))"), ([space]" ")]]
+levels:   [([stringBeg]), ([leftParen]"("), ([leftParen]"(")]
+token:    ([x]"x")
+--------------
+contexts: [[], [([func]"Division"), ([space]" ")], [([func]"Derivative"), ([space]" "), ([(Logarithm e (Product 2 x))]"(Logarithm e (Product 2 x))"), ([space]" "), ([x]"x")]]
+levels:   [([stringBeg]), ([leftParen]"("), ([leftParen]"(")]
+token:    ([rightParen]")")
+popping level on rightParen…
+parsing     [([func]"Derivative"), ([space]" "), ([(Logarithm e (Product 2 x))]"(Logarithm e (Product 2 x))"), ([space]" "), ([x]"x")]
+splitting on {space}
+splitted: [[([func]"Derivative")], [([(Logarithm e (Product 2 x))]"(Logarithm e (Product 2 x))")], [([x]"x")]]
+parsing     [([(Logarithm e (Product 2 x))]"(Logarithm e (Product 2 x))")]
+parsing     [([x]"x")]
+Division.simplify: (Division 2 (Product 2 x)) divided to (Division 1 x)
+…popped level
+--------------
+contexts: [[], [([func]"Division"), ([space]" "), ([(Division 1 x)]"(Derivative (Logarithm e (Product 2 x)) x)")]]
+levels:   [([stringBeg]), ([leftParen]"(")]
+token:    ([space]" ")
+--------------
+contexts: [[], [([func]"Division"), ([space]" "), ([(Division 1 x)]"(Derivative (Logarithm e (Product 2 x)) x)"), ([space]" ")]]
+levels:   [([stringBeg]), ([leftParen]"(")]
+token:    ([5]"5")
+--------------
+contexts: [[], [([func]"Division"), ([space]" "), ([(Division 1 x)]"(Derivative (Logarithm e (Product 2 x)) x)"), ([space]" "), ([5]"5")]]
+levels:   [([stringBeg]), ([leftParen]"(")]
+token:    ([rightParen]")")
+popping level on rightParen…
+parsing     [([func]"Division"), ([space]" "), ([(Division 1 x)]"(Derivative (Logarithm e (Product 2 x)) x)"), ([space]" "), ([5]"5")]
+splitting on {space}
+splitted: [[([func]"Division")], [([(Division 1 x)]"(Derivative (Logarithm e (Product 2 x)) x)")], [([5]"5")]]
+parsing     [([(Division 1 x)]"(Derivative (Logarithm e (Product 2 x)) x)")]
+parsing     [([5]"5")]
+…popped level
+parsing     [([(Division 1 (Product 5 x))]"(Division (Derivative (Logarithm e (Product 2 x)) x) 5)")]
+Simple.simplify: before substitution: (Division 1 (Product 5 x))
+Simple.simplify: after substitution:  (Division 1 (Product 5 x))
+(Division (Derivative (Logarithm e (Product 2 x)) x) 5) = 0.2/x
 ```
 
 

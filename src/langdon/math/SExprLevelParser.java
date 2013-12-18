@@ -59,7 +59,7 @@ public class SExprLevelParser implements LevelParser {
                 if (Operation.class.isAssignableFrom(funcClass)) {
                     Method funcMake = funcClass.getMethod("make", ArrayList.class);
                     // System.err.println(funcMake);
-                    return new Token<Object>(funcMake.invoke(null, Token.getValues(parsed)), parsed.get(0), parsed.get(parsed.size() - 1));
+                    return new Token<Object>(funcMake.invoke(null, Token.getValues(parsed)), splitted.get(0).get(0), parsed.get(parsed.size() - 1));
                 }
             } catch (Exception e) {
                 // System.err.println(e);
@@ -70,6 +70,11 @@ public class SExprLevelParser implements LevelParser {
         }
         
         throw new ParseException("no operation found", tokened.fromStrBegin);
+    }
+    
+    public SExprLevelParser withDebug(boolean debug) {
+        this.debug = debug;
+        return this;
     }
     
 }
