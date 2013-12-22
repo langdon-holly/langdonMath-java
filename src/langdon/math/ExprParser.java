@@ -26,6 +26,8 @@ public abstract class ExprParser {
                {"d(\\^\\d+)?[a-zA-Z]/d[a-zA-Z](\\^\\d+)?","varDerivative"},
                {"d(\\^\\d+)?/d[a-zA-Z](\\^\\d+)?","derivativeFunc"},
                {"undef", "undef"},
+               {"true", "true"},
+               {"false", "false"},
                {"sqrt", "sqrt"},
                {"sin", "sin"}, // (?![a-zA-Z])
                {"cos", "cos"},
@@ -34,6 +36,7 @@ public abstract class ExprParser {
                {"sec", "sec"},
                {"csc", "csc"},
                {"log", "log"},
+               {"if", "if"},
                {"ln", "ln"},
                {"pi", "piWord"},
                {"e", "e"},

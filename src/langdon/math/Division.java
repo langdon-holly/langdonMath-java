@@ -30,8 +30,8 @@ public class Division extends Operation {
         return make(exprs.get(0), exprs.get(1));
     }
     
-    public Expr deriv(Var inTermsOf) {
-        return make(Sum.make(Product.make(denom, numerator.deriv(inTermsOf)), Product.make(Number.make(-1d), Product.make(numerator, denom.deriv(inTermsOf)))), Exponent.make(denom, Number.make(2d)));
+    public Expr deriv(Var respected) {
+        return make(Sum.make(Product.make(denom, numerator.deriv(respected)), Product.make(Number.make(-1d), Product.make(numerator, denom.deriv(respected)))), Exponent.make(denom, Number.make(2d)));
     }
     
     public ArrayList<Expr> getExprs() {

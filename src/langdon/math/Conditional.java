@@ -1,16 +1,18 @@
 package langdon.math;
 
-public class Conditional<T extends Expr> extends Expr {
+import java.util.HashMap;
+
+public class Conditional extends Expr {
     
-    public BoolExpr ifIs;
-    public T then;
+    public Expr ifIs;
+    public Expr then;
     
-    private Conditional(BoolExpr ifIs, T then) {
+    private Conditional(Expr ifIs, Expr then) {
         this.ifIs = ifIs;
         this.then = then;
     }
     
-    public Expr make(BoolExpr ifIs, T then) {
+    public static Expr make(Expr ifIs, Expr then) {
         Conditional con = new Conditional(ifIs, then);
         return con.simplify();
     }
@@ -19,6 +21,26 @@ public class Conditional<T extends Expr> extends Expr {
         if (ifIs.isTrue()) return then;
         if (ifIs.isFalse()) return new Undef();
         return this;
+    }
+    
+    public String pretty() {
+        return then + " if " + ifIs;
+    }
+    
+    public int sign() {
+        return 2;
+    }
+    
+    public Expr copyPass(HashMap<Expr, Expr> subs) {
+        return make(ifIs.copy(subs), then.copy(subs));
+    }
+    
+    public boolean equalsExpr(Expr expr) {
+        return false;
+    }
+    
+    public Expr deriv(Var respected) {
+        return new Conditional(ifIs, then.deriv(respected));
     }
     
 }

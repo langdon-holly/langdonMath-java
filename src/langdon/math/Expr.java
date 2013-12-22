@@ -67,7 +67,7 @@ public abstract class Expr {
     }
     
 
-    public abstract Expr deriv(Var inTermsOf);
+    public abstract Expr deriv(Var respected);
     
     public abstract boolean equalsExpr(Expr expr);
     
@@ -319,6 +319,22 @@ public abstract class Expr {
         if (format.equals("s-expr")) return dump();
         if (format.equals("pretty")) return pretty();
         return toString();
+    }
+    
+    public static Expr yep() {
+        return Number.make(1);
+    }
+    
+    public static Expr nope() {
+        return Number.make(0);
+    }
+    
+    public boolean isTrue() {
+        return equalsExpr(Number.make(1));
+    }
+    
+    public boolean isFalse() {
+        return equalsExpr(Number.make(0));
     }
     
 }

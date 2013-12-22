@@ -36,11 +36,11 @@ public class Sum extends Operation {
         return new Sum(tmp1).simplify();
     }
     
-    public Expr deriv(Var inTermsOf) {
+    public Expr deriv(Var respected) {
         // if (debug) System.err.println("derivative of " + dump());
         ArrayList<Expr> exprsDiffed = new ArrayList<Expr>(exprs.size());
         for (Expr expr : exprs) {
-            exprsDiffed.add(expr.deriv(inTermsOf));
+            exprsDiffed.add(expr.deriv(respected));
         }
         // if (debug) System.err.println(dump() + " => ArrayList: " + exprsDiffed);
         // if (debug) System.err.println(dump() + " => " + new Sum(exprsDiffed).toString());

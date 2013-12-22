@@ -129,7 +129,7 @@ public class Simple {
 //                     char dxC = string.charAt(4);
 //                     Var dy = context.getVar(dyC);
 //                     Var dx = context.getVar(dxC);
-//                     dy.derivInTermsOf.put(dx, ExprParser.parse(string.substring(6, string.length()), context));
+//                     dy.derivrespected.put(dx, ExprParser.parse(string.substring(6, string.length()), context));
 //                     // if (debug) System.err.println("d" + dyC + "/d" + dxC + "=" + Derivative.make(dy, dx));
 //                 }
                 if (string.indexOf('=') != -1) {

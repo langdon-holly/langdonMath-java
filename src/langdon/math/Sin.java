@@ -50,8 +50,8 @@ public class Sin extends Function {
         return make(exprs.get(0));
     }
     
-    public Expr deriv(Var inTermsOf) {
-        return Product.make(ofExpr.deriv(inTermsOf), Cos.make(ofExpr));
+    public Expr deriv(Var respected) {
+        return Product.make(ofExpr.deriv(respected), Cos.make(ofExpr));
     }
     
     public ArrayList<Expr> getExprs() {

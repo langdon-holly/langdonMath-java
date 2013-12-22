@@ -10,7 +10,7 @@ public class E extends Constant {
     public E() {
     }
     
-    public Expr deriv(Var inTermsOf) {
+    public Expr deriv(Var respected) {
         return Number.make(0);
     }
     

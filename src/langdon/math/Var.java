@@ -22,7 +22,7 @@ public class Var extends Expr {
 
     private Character character;
     
-    public HashMap<Var, Expr> derivInTermsOf = new HashMap<Var, Expr>();
+    public HashMap<Var, Expr> derivrespected = new HashMap<Var, Expr>();
     
     public Var() {
         this('x');
@@ -40,10 +40,10 @@ public class Var extends Expr {
         this.character = character;
     }
     
-    public Expr deriv(Var inTermsOf) {
-        if (this.equals(inTermsOf)) return Number.make(1);
-        if (derivInTermsOf.containsKey(inTermsOf)) return derivInTermsOf.get(inTermsOf);
-        return Derivative.make(this, inTermsOf, false);
+    public Expr deriv(Var respected) {
+        if (this.equals(respected)) return Number.make(1);
+        if (derivrespected.containsKey(respected)) return derivrespected.get(respected);
+        return Derivative.make(this, respected, false);
     }
     
     public String pretty() {

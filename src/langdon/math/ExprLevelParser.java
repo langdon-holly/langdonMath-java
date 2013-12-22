@@ -10,7 +10,8 @@ import langdon.util.*;
 
 public class ExprLevelParser implements LevelParser {
     
-    public Object[][] breakOrder = {{"plus"},
+    public Object[][] breakOrder = {{"if"},
+                                    {"plus"},
                                     {"sin", "cos", "tan", "cot", "sec", "csc", "log", "ln", new PartialParseExpr("derivativeFunc"), "sqrt"},
                                     {"times", "division"},
                                     {"minus"},
@@ -52,6 +53,7 @@ public class ExprLevelParser implements LevelParser {
         parseDir.put("division", 1); // left-associative
         parseDir.put("minus", -1);
         parseDir.put("exponent", -1);
+        parseDir.put("if", 1);
     }
     
     public Token<Object> parseLevel(Token[] delims, TokenList<?> tokened) throws ParseException {
@@ -169,6 +171,11 @@ public class ExprLevelParser implements LevelParser {
                     Token<Expr> sqrtOf = parseLevel(opTokenPair, splitted.get(1)).castValueTo(Expr.class);
                     splitted.get(0).add(new Token<Object>(Exponent.make(sqrtOf.tokenValue, langdon.math.Number.make(0.5)), splitOnToken, sqrtOf));
                     return parseLevel(opTokenPair, splitted.get(0));
+                }
+                else if (splitOn.equals("if")) {
+                    Token<Expr> then = parseLevel(opTokenPair, splitted.get(0)).castValueTo(Expr.class);
+                    Token<Expr> ifIs = parseLevel(opTokenPair, splitted.get(1)).castValueTo(Expr.class);
+                    return new Token<Object>(Conditional.make(ifIs.tokenValue, then.tokenValue), then, ifIs);
                 }
                 else {
                     if (debug) System.err.println(splitOn + " operation not yet supported");

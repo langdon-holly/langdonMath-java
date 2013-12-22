@@ -30,22 +30,22 @@ public class Exponent extends Operation {
         return make(exprs.get(0), exprs.get(1));
     }
     
-    public Expr deriv(Var inTermsOf) {
+    public Expr deriv(Var respected) {
         if (exponent.isConstant()) {
             ArrayList<Expr> tmp = new ArrayList<Expr>();
             tmp.add(exponent);
             tmp.add(Exponent.make(base, Sum.make(exponent, Number.make(-1))));
-            tmp.add(base.deriv(inTermsOf));
+            tmp.add(base.deriv(respected));
             return Product.make(tmp);
         }
         if (base.isConstant()) {
             ArrayList<Expr> tmp = new ArrayList<Expr>();
             tmp.add(Logarithm.make(new E(), base));
             tmp.add(this.simplify());
-            tmp.add(exponent.deriv(inTermsOf));
+            tmp.add(exponent.deriv(respected));
             return Product.make(tmp);
         }
-        return new Exponent(new E(), Product.make(exponent, Logarithm.make(new E(), base))).deriv(inTermsOf);
+        return new Exponent(new E(), Product.make(exponent, Logarithm.make(new E(), base))).deriv(respected);
         // throw new UnsupportedOperationException("derivative of " + this);
     }
     

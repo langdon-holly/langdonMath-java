@@ -22,8 +22,8 @@ public class Cos extends Function {
         return make(exprs.get(0));
     }
     
-    public Expr deriv(Var inTermsOf) {
-        return Product.make(ofExpr.deriv(inTermsOf), Product.negative(Sin.make(ofExpr)));
+    public Expr deriv(Var respected) {
+        return Product.make(ofExpr.deriv(respected), Product.negative(Sin.make(ofExpr)));
     }
     
     public ArrayList<Expr> getExprs() {

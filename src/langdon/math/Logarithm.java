@@ -28,10 +28,10 @@ public class Logarithm extends Function {
         return ofExpr;
     }
     
-    public Expr deriv(Var inTermsOf) {
-        if (base instanceof E) return Division.make(ofExpr.deriv(inTermsOf), ofExpr);
+    public Expr deriv(Var respected) {
+        if (base instanceof E) return Division.make(ofExpr.deriv(respected), ofExpr);
         if (base.isConstant() && ofExpr.isConstant()) return Number.make();
-        return Derivative.make(Division.make(Logarithm.make(new E(), ofExpr), Logarithm.make(new E(), base)), inTermsOf);
+        return Derivative.make(Division.make(Logarithm.make(new E(), ofExpr), Logarithm.make(new E(), base)), respected);
     }
     
     public ArrayList<Expr> getExprs() {

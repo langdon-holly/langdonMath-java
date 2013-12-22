@@ -42,16 +42,16 @@ public class Product extends Operation {
         return make(tmp1);
     }
     
-    public Expr deriv(Var inTermsOf) {
+    public Expr deriv(Var respected) {
         // if (debug) System.err.println("derivative of " + dump());
         if (exprs.isEmpty()) return Number.make();
-        if (exprs.size() == 1) return exprs.get(0).deriv(inTermsOf);
+        if (exprs.size() == 1) return exprs.get(0).deriv(respected);
         if (exprs.size() == 2) {
             // if (debug) System.err.println(dump() + " => " + Sum.make(Product.make(exprs.get(0), exprs.get(1).deriv(dy, dx)), Product.make(exprs.get(1), exprs.get(0).deriv(dy, dx))));
-            return Sum.make(Product.make(exprs.get(0), exprs.get(1).deriv(inTermsOf)), Product.make(exprs.get(0).deriv(inTermsOf), exprs.get(1)));
+            return Sum.make(Product.make(exprs.get(0), exprs.get(1).deriv(respected)), Product.make(exprs.get(0).deriv(respected), exprs.get(1)));
         }
         // if (debug) System.err.println(ArrayLists.dumpAll(exprs));
-        return Product.make(new Product(new ArrayList<Expr>(exprs.subList(0, exprs.size() - 1))), exprs.get(exprs.size() - 1), false).deriv(inTermsOf);
+        return Product.make(new Product(new ArrayList<Expr>(exprs.subList(0, exprs.size() - 1))), exprs.get(exprs.size() - 1), false).deriv(respected);
     }
     
     public ArrayList<Expr> getExprs() {

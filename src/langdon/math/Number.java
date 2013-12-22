@@ -70,7 +70,7 @@ public class Number extends Constant implements Comparable<Number> {
         return new Number(1);
     }
     
-    public Expr deriv(Var inTermsOf) {
+    public Expr deriv(Var respected) {
         return make();
     }
     

@@ -6,7 +6,7 @@ import langdon.math.*;
 
 public class Undef extends Expr {
     
-    public Expr deriv(Var inTermsOf) {
+    public Expr deriv(Var respected) {
         return new Undef();
     }
     

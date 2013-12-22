@@ -36,3 +36,5 @@ langdon/math/ExprLevelParser.java
 langdon/math/ParenFunctioning.java
 langdon/math/SExprTokenParser.java
 langdon/math/SExprLevelParser.java
+langdon/math/Conditional.java
+langdon/math/Comparison.java

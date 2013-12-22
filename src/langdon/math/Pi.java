@@ -10,7 +10,7 @@ public class Pi extends Constant {
     public Pi() {
     }
     
-    public Expr deriv(Var inTermsOf) {
+    public Expr deriv(Var respected) {
         return Number.make(0);
     }
     
