@@ -7,7 +7,8 @@ import java.util.Arrays;
 
 public abstract class Expr {
     
-    private static final Class[][] classOrderA = {{Sum.class},
+    private static final Class[][] classOrderA = {{Conditional.class},
+                                                  {Sum.class},
                                                   {Logarithm.class, Sin.class, Cos.class, Derivative.class},
                                                   {Product.class, Division.class},
                                                   {Exponent.class}};
@@ -23,7 +24,8 @@ public abstract class Expr {
     
     public static final int classOrderNum = classOrderA.length;
     
-    public static final Object[][] printLevelSidesAddA = {{Sin.class, null, -1},
+    public static final Object[][] printLevelSidesAddA = {{Conditional.class, -1, 0},
+                                                          {Sin.class, null, -1},
                                                           {Product.class,   -1, 0},
                                                           {Exponent.class,   0, -1}};
     
@@ -148,7 +150,7 @@ public abstract class Expr {
         return classPersonalLevelRight(this.getClass());
     }
     
-    public Integer printLevelLeft() {
+    public Integer printLevelLeft() { // the tightest level allowed around it
         return this.printSimplify().printLevelLeftPass();
     }
     

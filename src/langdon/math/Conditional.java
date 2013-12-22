@@ -1,8 +1,9 @@
 package langdon.math;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Conditional extends Expr {
+public class Conditional extends Operation {
     
     public Expr ifIs;
     public Expr then;
@@ -17,6 +18,10 @@ public class Conditional extends Expr {
         return con.simplify();
     }
     
+    public static Expr make(ArrayList<? extends Expr> exprs) {
+        return make(exprs.get(1), exprs.get(0));
+    }
+    
     private Expr simplify() {
         if (ifIs.isTrue()) return then;
         if (ifIs.isFalse()) return new Undef();
@@ -24,7 +29,22 @@ public class Conditional extends Expr {
     }
     
     public String pretty() {
-        return then + " if " + ifIs;
+        String string = new String();
+        
+        Integer thisClassOrder = this.classOrder();
+        
+        boolean thenParens = false;
+        if (thisClassOrder > then.printLevelRight()) thenParens = true;
+        // if (debug) System.err.println("Division toString(): for expr=" + then + ", printLevelRight=" + then.printLevelRight());
+        boolean ifIsParens = false;
+        if (thisClassOrder > ifIs.printLevelLeft()) ifIsParens = true;
+        // if (debug) System.err.println("Division toString(): for expr=" + ifIs + ", printLevelLeft=" + ifIs.printLevelLeft());
+        
+        string = string.concat((thenParens?"(":"") + then.pretty() + (thenParens?")":""));
+        string = string.concat(" if ");
+        string = string.concat((ifIsParens?"(":"") + ifIs.pretty() + (ifIsParens?")":""));
+        
+        return string;
     }
     
     public int sign() {
@@ -41,6 +61,13 @@ public class Conditional extends Expr {
     
     public Expr deriv(Var respected) {
         return new Conditional(ifIs, then.deriv(respected));
+    }
+    
+    public ArrayList<Expr> getExprs() {
+        ArrayList<Expr> arrayList = new ArrayList<Expr>();
+        arrayList.add(then);
+        arrayList.add(ifIs);
+        return arrayList;
     }
     
 }
