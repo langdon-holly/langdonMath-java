@@ -29,6 +29,8 @@ public abstract class ExprParser {
                {"true", "true"},
                {"false", "false"},
                {"sqrt", "sqrt"},
+               {"not", "not"},
+               {"and", "and"},
                {"sin", "sin"}, // (?![a-zA-Z])
                {"cos", "cos"},
                {"tan", "tan"},
@@ -37,6 +39,7 @@ public abstract class ExprParser {
                {"csc", "csc"},
                {"log", "log"},
                {"if", "if"},
+               {"or", "or"},
                {"ln", "ln"},
                {"pi", "piWord"},
                {"e", "e"},
@@ -54,11 +57,24 @@ public abstract class ExprParser {
                {"\\)", "rightParen"},
                {"\\[", "leftBracket"},
                {"\\]", "rightBracket"},
-               {"\\^", "exponentCaret"}};
+               {"\\^", "exponentCaret"},
+               {"<=", "lessThanOrEqual"},
+               {">=", "greaterThanOrEqual"},
+               {"<", "lessThan"},
+               {">", "greaterThan"},
+               {"=", "equals"},
+               {"!=", "notEqual"},
+               {",", "comma"},
+               {"~", "squiggly"},
+               {"&&","2amp"},
+               {"||","2bar"}};
     
     public static String[][] sExprTokens
             = {{"\\s+","space"},
                {"undef", "undef"},
+               {"true", "true"},
+               {"false", "false"},
+               {"if", "if"},
                {"pi", "piWord"},
                {"e", "e"},
                {"i", "i"},
@@ -77,6 +93,9 @@ public abstract class ExprParser {
         tokenMap.put("divisionSlash", new String[]{"division"});
         tokenMap.put("exponentCaret", new String[]{"exponent"});
         tokenMap.put("piWord", new String[]{"pi"});
+        tokenMap.put("squiggly", new String[]{"not"});
+        tokenMap.put("2amp", new String[]{"and"});
+        tokenMap.put("2bar", new String[]{"or"});
     }
     
     public static Token[][] levelDelims = {{new Token<Object>("leftParen"), new Token<Object>("rightParen")},

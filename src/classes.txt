@@ -38,3 +38,13 @@ langdon/math/SExprTokenParser.java
 langdon/math/SExprLevelParser.java
 langdon/math/Conditional.java
 langdon/math/Comparison.java
+langdon/math/LessThan.java
+langdon/math/Equals.java
+langdon/math/Piecewise.java
+langdon/math/Not.java
+langdon/math/Or.java
+langdon/math/NotEqual.java
+langdon/math/And.java
+langdon/math/GreaterThan.java
+langdon/math/LessThanOrEqual.java
+langdon/math/GreaterThanOrEqual.java

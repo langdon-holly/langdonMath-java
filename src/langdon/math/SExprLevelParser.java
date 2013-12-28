@@ -36,9 +36,9 @@ public class SExprLevelParser implements LevelParser {
         if (((ArrayList<Object>) Token.getValues(tokened)).contains("space")) {
             if (debug) System.err.println("splitting on {space}");
             
-            Token<Object>[] splitOnA = new Token[]{new Token<Object>("none")};
+            ArrayList<Token<Object>> splitOnAL = new ArrayList<Token<Object>>();
             
-            ArrayList<TokenList<Object>> splitted = TokenList.toArrTokenList(ArrayLists.split((ArrayList<Token<Object>>) tokened, spaceTokenArr, 0, splitOnA));
+            ArrayList<TokenList<Object>> splitted = TokenList.toArrTokenList(ArrayLists.split((ArrayList<Token<Object>>) tokened, spaceTokenArr, 0, splitOnAL));
             if (splitted.get(0).fromStrBegin == null) splitted.get(0).fromStrBegin = tokened.fromStrBegin;
             if (splitted.get(splitted.size() - 1).fromStrBegin == null) {
                 splitted.get(splitted.size() - 1).fromStrBegin = tokened.get(tokened.size() - 1).fromStrEnd;

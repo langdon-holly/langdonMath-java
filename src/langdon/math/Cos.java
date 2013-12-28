@@ -14,12 +14,15 @@ public class Cos extends Function {
     }
     
     public static Expr make(Expr ofExpr) {
-        Cos cos = new Cos(ofExpr);
-        return cos.simplify();
+        return new Cos(ofExpr).simplify();
     }
     
     public static Expr make(ArrayList<? extends Expr> exprs) {
         return make(exprs.get(0));
+    }
+    
+    public static Expr makeDefined(ArrayList<? extends Expr> exprs) {
+        return make(exprs);
     }
     
     public Expr deriv(Var respected) {
@@ -32,8 +35,10 @@ public class Cos extends Function {
         return arrayList;
     }
     
-    private Expr simplify() {
-        if (hasUndef()) return new Undef();
+    public Expr simplify() {
+        Expr conditioned = conditioned();
+        if (conditioned != null) return conditioned;
+        
         Expr sinSimplified = Sin.make(Sum.make(ofExpr, Division.make(new Pi(), Number.make(2))));
         if (sinSimplified.isConstant()) return sinSimplified;
         
@@ -59,6 +64,10 @@ public class Cos extends Function {
         
         if (ofExpr.equalsExpr(((Operation) expr).getExprs().get(0))) return true;
         
+        return false;
+    }
+    
+    public boolean notEqualsExpr(Expr expr) {
         return false;
     }
     

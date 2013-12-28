@@ -22,13 +22,14 @@ public final class ArrayLists {
         toSplit.add("not");
         toSplit.add("bad");
         Object[] splitOn = {"good", "bad"};
-        Object[] objectFound = {"not found: ☹"};
+        ArrayList<Object> objectFound = new ArrayList<Object>();
         
         System.out.println(toSplit);
         System.out.println("splitOn: " + Arrays.toString(splitOn));
-        System.out.println(" 0: " + split(toSplit, splitOn, 0, objectFound) + "\n    " + objectFound[0]);
-        System.out.println("-1: " + split(toSplit, splitOn, -1, objectFound) + "\n    " + objectFound[0]);
-        System.out.println(" 1: " + split(toSplit, splitOn, 1, objectFound) + "\n    " + objectFound[0]);
+        System.out.println(" 0: " + split(toSplit, splitOn, 0, objectFound) + "\n    " + objectFound);
+        System.out.println("-1: " + split(toSplit, splitOn, -1, objectFound) + "\n    " + objectFound);
+        System.out.println(" 1: " + split(toSplit, splitOn, 1, objectFound) + "\n    " + objectFound);
+        System.out.println(" 2: " + split(toSplit, splitOn, 2, objectFound) + "\n    " + objectFound);
     }
     
     public static <T> ArrayList<ArrayList<T>> split(ArrayList<T> arrayList, T[] splitOn) {
@@ -39,13 +40,14 @@ public final class ArrayLists {
         return split(arrayList, splitOn, direction, null);
     }
     
-    public static <T> ArrayList<ArrayList<T>> split(ArrayList<T> arrayList, T[] splitOn, int direction, T[] objectFound) {
+    public static <T> ArrayList<ArrayList<T>> split(ArrayList<T> arrayList, T[] splitOn, int direction, ArrayList<T> objectFound) {
         if (!containsIn(arrayList, splitOn)) {
             return null;
         }
         
         arrayList = (ArrayList<T>) arrayList.clone();
         ArrayList<ArrayList<T>> splitted = new ArrayList<ArrayList<T>>();
+        objectFound.clear();
         
         if (direction == 0) {
             while (containsIn(arrayList, splitOn)) {
@@ -84,6 +86,25 @@ public final class ArrayLists {
             
             splitted.add(0, arrayList);
         }
+        else if (direction == 2) {
+            while (containsIn(arrayList, splitOn)) {
+                List<T> subList = arrayList.subList(0, indexInMultFound(arrayList, splitOn, objectFound));
+                ArrayList<T> tmp = new ArrayList<T>(subList);
+                if (tmp.size() > 0) {
+                    splitted.add(tmp);
+                } else {
+                    objectFound.remove(objectFound.size() - 1);
+                }
+                
+                subList.clear();
+                arrayList.remove(0);
+            }
+            if (arrayList.size() > 0) {
+                splitted.add(arrayList);
+            } else {
+                objectFound.remove(objectFound.size() - 1);
+            }
+        }
         
         return splitted;
     }
@@ -92,14 +113,41 @@ public final class ArrayLists {
 	    return indexIn(arrayList, objects, null);
     }
     
-    public static <T> int indexIn(ArrayList<T> arrayList, T[] objects, T[] objectFound) {
+    public static <T> int indexIn(ArrayList<T> arrayList, T[] objects, ArrayList<T> objectFound) {
         int index = -1;
         
         for (T object : objects) {
             int indexOf = arrayList.indexOf(object);
             if (indexOf != -1 && (index == -1 || indexOf < index)) {
                 index = indexOf;
-                if (objectFound != null) objectFound[0] = arrayList.get(indexOf);
+                if (objectFound != null) {
+                    if (objectFound.size() == 0) {
+                        objectFound.add(arrayList.get(indexOf));
+                    } else {
+                        objectFound.set(0, arrayList.get(indexOf));
+                    }
+                }
+            }
+        }
+        
+        return index;
+    }
+    
+    public static <T> int indexInMultFound(ArrayList<T> arrayList, T[] objects, ArrayList<T> objectFound) {
+        int initObjectsFound = objectFound.size();
+        int index = -1;
+        
+        for (T object : objects) {
+            int indexOf = arrayList.indexOf(object);
+            if (indexOf != -1 && (index == -1 || indexOf < index)) {
+                index = indexOf;
+                if (objectFound != null) {
+                    if (objectFound.size() == initObjectsFound) {
+                        objectFound.add(arrayList.get(indexOf));
+                    } else {
+                        objectFound.set(initObjectsFound, arrayList.get(indexOf));
+                    }
+                }
             }
         }
         
@@ -110,14 +158,20 @@ public final class ArrayLists {
 	    return lastIndexIn(arrayList, objects, null);
     }
     
-    public static <T> int lastIndexIn(ArrayList<T> arrayList, T[] objects, T[] objectFound) {
+    public static <T> int lastIndexIn(ArrayList<T> arrayList, T[] objects, ArrayList<T> objectFound) {
         int index = -1;
         
         for (T object : objects) {
             int lastIndexOf = arrayList.lastIndexOf(object);
             if (lastIndexOf > index) {
                 index = lastIndexOf;
-                if (objectFound != null) objectFound[0] = arrayList.get(lastIndexOf);
+                if (objectFound != null) {
+                    if (objectFound.size() == 0) {
+                        objectFound.add(arrayList.get(lastIndexOf));
+                    } else {
+                        objectFound.set(0, arrayList.get(lastIndexOf));
+                    }
+                }
             }
         }
         
@@ -163,6 +217,14 @@ public final class ArrayLists {
             strs.add(expr.toString());
         }
         return strs.toString();
+    }
+    
+    public static boolean elemExprsEqual(ArrayList<? extends Expr> al1, ArrayList<? extends Expr> al2) {
+        if (al1.size() != al2.size()) return false;
+        for (int i = 0; i < al1.size(); i++) {
+            if (!al1.get(i).equalsExpr(al2.get(i))) return false;
+        }
+        return true;
     }
     
 }

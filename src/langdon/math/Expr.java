@@ -7,7 +7,13 @@ import java.util.Arrays;
 
 public abstract class Expr {
     
-    private static final Class[][] classOrderA = {{Conditional.class},
+    private static final Class[][] classOrderA = {{Piecewise.class},
+                                                  {Conditional.class},
+                                                  {Or.class},
+                                                  {And.class},
+                                                  {Not.class},
+                                                  {LessThan.class, Equals.class, NotEqual.class, GreaterThan.class,
+                                                   LessThanOrEqual.class, GreaterThanOrEqual.class},
                                                   {Sum.class},
                                                   {Logarithm.class, Sin.class, Cos.class, Derivative.class},
                                                   {Product.class, Division.class},
@@ -24,10 +30,10 @@ public abstract class Expr {
     
     public static final int classOrderNum = classOrderA.length;
     
-    public static final Object[][] printLevelSidesAddA = {{Conditional.class, -1, 0},
-                                                          {Sin.class, null, -1},
+    public static final Object[][] printLevelSidesAddA = {{Sin.class, null, -1},
                                                           {Product.class,   -1, 0},
-                                                          {Exponent.class,   0, -1}};
+                                                          {Exponent.class,   0, -1},
+                                                          {Conditional.class, -1, 0}};
     
     public static final HashMap<Class, Integer[]> printLevelSidesHM = new HashMap<Class, Integer[]>();
     static {
@@ -72,6 +78,8 @@ public abstract class Expr {
     public abstract Expr deriv(Var respected);
     
     public abstract boolean equalsExpr(Expr expr);
+    
+    public abstract boolean notEqualsExpr(Expr expr);
     
     public abstract Expr copyPass(HashMap<Expr, Expr> substitutions);
     
@@ -299,7 +307,16 @@ public abstract class Expr {
         return copyPass(subs);
     }
     
+    // to be overrided, mostly
+    public Expr simplify() {
+        return this;
+    }
+    
     public Expr printSimplify() {
+        return printSimplifyPass();
+    }
+    
+    public Expr printSimplifyPass() {
         printSimplified = true;
         return this;
     }
@@ -337,6 +354,28 @@ public abstract class Expr {
     
     public boolean isFalse() {
         return equalsExpr(Number.make(0));
+    }
+    
+    public Expr condition() {
+        if (this instanceof Undef) return Expr.nope();
+        if (this instanceof Conditional) return ((Operation) this).getExpr(1);
+        return Expr.yep();
+    }
+    
+    public Expr defined() {
+        if (this instanceof Undef) return null;
+        if (this instanceof Conditional) return ((Operation) this).getExpr(0);
+        return this;
+    }
+    
+    public boolean implies(Expr expr) {
+        return equalsExpr(expr);
+    }
+    
+    public ArrayList<Expr> implies() {
+        ArrayList<Expr> implied = new ArrayList<Expr>();
+        implied.add(this);
+        return implied;
     }
     
 }

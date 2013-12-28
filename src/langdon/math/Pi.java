@@ -22,6 +22,10 @@ public class Pi extends Constant {
         return expr instanceof Pi;
     }
     
+    public boolean notEqualsExpr(Expr expr) {
+        return false;
+    }
+    
     public Expr copyPass(HashMap<Expr, Expr> subs) {
         return new Pi();
     }

@@ -30,6 +30,10 @@ public class Exponent extends Operation {
         return make(exprs.get(0), exprs.get(1));
     }
     
+    public static Expr makeDefined(ArrayList<? extends Expr> exprs) {
+        return make(exprs);
+    }
+    
     public Expr deriv(Var respected) {
         if (exponent.isConstant()) {
             ArrayList<Expr> tmp = new ArrayList<Expr>();
@@ -102,8 +106,10 @@ public class Exponent extends Operation {
         return string;
     }
     
-    private Expr simplify() {
-        if (hasUndef()) return new Undef();
+    public Expr simplify() {
+        Expr conditioned = conditioned();
+        if (conditioned != null) return conditioned;
+        
         if (base instanceof Number && ((Number) base).val() == 0 && exponent instanceof Number && ((Number) exponent).val() == 0) return new Undef(); // 0^0
         if (base instanceof Number && ((Number) base).val() == 0) return Number.make();
         if (exponent instanceof Number && ((Number) exponent).val() == 0) return Number.make(1);

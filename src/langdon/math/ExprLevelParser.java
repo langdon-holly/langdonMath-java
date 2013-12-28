@@ -10,7 +10,12 @@ import langdon.util.*;
 
 public class ExprLevelParser implements LevelParser {
     
-    public Object[][] breakOrder = {{"if"},
+    public Object[][] breakOrder = {{"comma"},
+                                    {"if"},
+                                    {"or"},
+                                    {"and"},
+                                    {"not"},
+                                    {"comparisonDummy", new PartialParseExpr("comparison")},
                                     {"plus"},
                                     {"sin", "cos", "tan", "cot", "sec", "csc", "log", "ln", new PartialParseExpr("derivativeFunc"), "sqrt"},
                                     {"times", "division"},
@@ -54,6 +59,11 @@ public class ExprLevelParser implements LevelParser {
         parseDir.put("minus", -1);
         parseDir.put("exponent", -1);
         parseDir.put("if", 1);
+        parseDir.put("comparisonDummy", 2); // chaining or whatever
+        parseDir.put("comma", 0);
+        parseDir.put("not", -1);
+        parseDir.put("or", 0);
+        parseDir.put("and", 0);
     }
     
     public Token<Object> parseLevel(Token[] delims, TokenList<?> tokened) throws ParseException {
@@ -78,15 +88,16 @@ public class ExprLevelParser implements LevelParser {
                 
                 int tokenParseDir = parseDir.get(breakOrder[i][0]);
                 
-                Token<Object>[] splitOnA = new Token[]{new Token<Object>("none")};
+                ArrayList<Token<Object>> splitOnAL = new ArrayList<Token<Object>>();
                 
-                ArrayList<TokenList<Object>> splitted = TokenList.toArrTokenList(ArrayLists.split((ArrayList<Token<Object>>) tokened, tokenBreakOrder[i], tokenParseDir, splitOnA));
+                ArrayList<TokenList<Object>> splitted = TokenList.toArrTokenList(ArrayLists.split((ArrayList<Token<Object>>) tokened, tokenBreakOrder[i], tokenParseDir, splitOnAL));
+                
                 if (splitted.get(0).fromStrBegin == null) splitted.get(0).fromStrBegin = tokened.fromStrBegin;
                 if (splitted.get(splitted.size() - 1).fromStrBegin == null) {
                     splitted.get(splitted.size() - 1).fromStrBegin = tokened.get(tokened.size() - 1).fromStrEnd;
                 }
                 
-                Token<Object> splitOnToken = splitOnA[0];
+                Token<Object> splitOnToken = splitOnAL.get(0);
                 Object splitOn = splitOnToken.tokenValue;
                 if (debug) System.err.println("splitted: " + splitted);
                 Token[] opTokenPair = {splitOnToken, splitOnToken};
@@ -177,6 +188,86 @@ public class ExprLevelParser implements LevelParser {
                     Token<Expr> ifIs = parseLevel(opTokenPair, splitted.get(1)).castValueTo(Expr.class);
                     return new Token<Object>(Conditional.make(ifIs.tokenValue, then.tokenValue), then, ifIs);
                 }
+                else if (splitOn.equals(new PartialParseExpr("comparison"))) {
+                    ArrayList<Token<Expr>> parsed = parseArrayList(splitted, opTokenPair);
+                    ArrayList<Expr> ands = new ArrayList<Expr>();
+                    
+                    for (int j = 0; j < parsed.size() - 1; j++) {
+                        Expr expr1 = parsed.get(j).tokenValue;
+                        Expr expr2 = parsed.get(j + 1).tokenValue;
+                        Object operation = ((PartialParseExpr) splitOnAL.get(j).tokenValue).get("operation");
+                        
+                        if (operation.equals("equals")) {
+                            ands.add(Equals.make(expr1, expr2));
+                        } else if (operation.equals("notEqual")) {
+                            ands.add(NotEqual.make(expr1, expr2));
+                        } else if (operation.equals("lessThan")) {
+                            ands.add(LessThan.make(expr1, expr2));
+                        } else if (operation.equals("greaterThan")) {
+                            ands.add(GreaterThan.make(expr1, expr2));
+                        } else if (operation.equals("lessThanOrEqual")) {
+                            ands.add(LessThanOrEqual.make(expr1, expr2));
+                        } else if (operation.equals("greaterThanOrEqual")) {
+                            ands.add(GreaterThanOrEqual.make(expr1, expr2));
+                        } else {
+                            if (debug) System.err.println(operation + " operation not yet supported");
+                            throw new ParseException(operation + " operation not yet supported", splitOnAL.get(j).fromStrBegin);
+                        }
+                    }
+                    return new Token<Object>(And.make(ands), parsed.get(0), parsed.get(parsed.size() - 1));
+                }
+                else if (splitOn.equals("equals")) {
+                    ArrayList<Token<Expr>> parsed = new ArrayList<Token<Expr>>();
+                    for (TokenList<Object> toParse : splitted) {
+                        parsed.add(parseLevel(opTokenPair, toParse).castValueTo(Expr.class));
+                    }
+                    return new Token<Object>(Equals.make(Token.getValues(parsed)), parsed.get(0), parsed.get(parsed.size() - 1));
+                }
+                else if (splitOn.equals("comma")) {
+                    ArrayList<Token<Expr>> parsed = new ArrayList<Token<Expr>>();
+                    for (TokenList<Object> toParse : splitted) {
+                        parsed.add(parseLevel(opTokenPair, toParse).castValueTo(Expr.class));
+                    }
+                    return new Token<Object>(Piecewise.make(Token.getValues(parsed)), parsed.get(0), parsed.get(parsed.size() - 1));
+                }
+                else if (splitOn.equals("not")) {
+                    Token<Expr> notThis = parseLevel(opTokenPair, splitted.get(1)).castValueTo(Expr.class);
+                    splitted.get(0).add(new Token<Object>(Not.make(notThis.tokenValue), splitOnToken, notThis));
+                    return parseLevel(opTokenPair, splitted.get(0));
+                }
+                else if (splitOn.equals("or")) {
+                    ArrayList<Token<Expr>> parsed = new ArrayList<Token<Expr>>();
+                    for (TokenList<Object> toParse : splitted) {
+                        parsed.add(parseLevel(opTokenPair, toParse).castValueTo(Expr.class));
+                    }
+                    return new Token<Object>(Or.make(Token.getValues(parsed)), parsed.get(0), parsed.get(parsed.size() - 1));
+                }
+                else if (splitOn.equals("notEqual")) {
+                    ArrayList<Token<Expr>> parsed = new ArrayList<Token<Expr>>();
+                    for (TokenList<Object> toParse : splitted) {
+                        parsed.add(parseLevel(opTokenPair, toParse).castValueTo(Expr.class));
+                    }
+                    return new Token<Object>(NotEqual.make(Token.getValues(parsed)), parsed.get(0), parsed.get(parsed.size() - 1));
+                }
+                else if (splitOn.equals("and")) {
+                    ArrayList<Token<Expr>> parsed = new ArrayList<Token<Expr>>();
+                    for (TokenList<Object> toParse : splitted) {
+                        parsed.add(parseLevel(opTokenPair, toParse).castValueTo(Expr.class));
+                    }
+                    return new Token<Object>(And.make(Token.getValues(parsed)), parsed.get(0), parsed.get(parsed.size() - 1));
+                }
+                else if (splitOn.equals("greaterThan")) {
+                    ArrayList<Token<Expr>> parsed = parseArrayList(splitted, opTokenPair);
+                    return new Token<Object>(GreaterThan.make(Token.getValues(parsed)), parsed.get(0), parsed.get(parsed.size() - 1));
+                }
+                else if (splitOn.equals("lessThanOrEqual")) {
+                    ArrayList<Token<Expr>> parsed = parseArrayList(splitted, opTokenPair);
+                    return new Token<Object>(LessThanOrEqual.make(Token.getValues(parsed)), parsed.get(0), parsed.get(parsed.size() - 1));
+                }
+                else if (splitOn.equals("greaterThanOrEqual")) {
+                    ArrayList<Token<Expr>> parsed = parseArrayList(splitted, opTokenPair);
+                    return new Token<Object>(GreaterThanOrEqual.make(Token.getValues(parsed)), parsed.get(0), parsed.get(parsed.size() - 1));
+                }
                 else {
                     if (debug) System.err.println(splitOn + " operation not yet supported");
                     throw new ParseException(splitOn + " operation not yet supported", splitOnToken.fromStrBegin);
@@ -201,6 +292,14 @@ public class ExprLevelParser implements LevelParser {
         
         if (debug) System.err.println("altered to: " + tokened);
         return tokened;
+    }
+    
+    public ArrayList<Token<Expr>> parseArrayList(ArrayList<TokenList<Object>> splitted, Token[] opTokenPair) throws ParseException {
+        ArrayList<Token<Expr>> parsed = new ArrayList<Token<Expr>>();
+        for (TokenList<Object> toParse : splitted) {
+            parsed.add(parseLevel(opTokenPair, toParse).castValueTo(Expr.class));
+        }
+        return parsed;
     }
     
     public ExprLevelParser withDebug(boolean debug) {

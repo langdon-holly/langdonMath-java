@@ -37,8 +37,14 @@ public class Derivative extends Function {
         return make(exprs.get(0), (Var) exprs.get(1));
     }
     
-    private Expr simplify() {
-        if (hasUndef()) return new Undef();
+    public static Expr makeDefined(ArrayList<? extends Expr> exprs) {
+        return make(exprs);
+    }
+    
+    public Expr simplify() {
+        Expr conditioned = conditioned();
+        if (conditioned != null) return conditioned;
+        
         if (!(ofExpr instanceof Derivative)) {
             return ofExpr.deriv(respected);
         }
@@ -63,6 +69,10 @@ public class Derivative extends Function {
         
         if (ofExpr.equalsExpr(((Operation) expr).getExprs().get(0)) && respected.equals(((Derivative) expr).respected())) return true;
         
+        return false;
+    }
+    
+    public boolean notEqualsExpr(Expr expr) {
         return false;
     }
     

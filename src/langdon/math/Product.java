@@ -24,6 +24,10 @@ public class Product extends Operation {
         return simplify ? product.simplify() : product;
     }
     
+    public static Expr makeDefined(ArrayList<? extends Expr> exprs) {
+        return make(exprs);
+    }
+    
     public static Expr make(Expr expr1, Expr expr2) {
         return make(expr1, expr2, true);
     }
@@ -58,8 +62,10 @@ public class Product extends Operation {
         return (ArrayList<Expr>) exprs.clone();
     }
     
-    private Expr simplify() {
-        if (hasUndef()) return new Undef();
+    public Expr simplify() {
+        Expr conditioned = conditioned();
+        if (conditioned != null) return conditioned;
+        
         ArrayList<Expr> bottoms = new ArrayList<Expr>();
         for (int i = 0; i < exprs.size(); i++) {
             Expr expr = exprs.get(i);
@@ -160,6 +166,15 @@ public class Product extends Operation {
                     }
                     if (expr instanceof Exponent && expr2 instanceof Exponent && ((Operation) expr).getExpr(0).equalsExpr(((Operation) expr2).getExpr(0))) {
                         exprs.set(j, Exponent.make(((Operation) expr).getExpr(0), Sum.make(((Operation) expr).getExpr(1), ((Operation) expr2).getExpr(1))));
+                        exprs.remove(i);
+                        return simplify();
+                    }
+                    if (!(expr instanceof Operation) && expr2 instanceof Sum) {
+                        ArrayList<Expr> products = new ArrayList<Expr>();
+                        for (Expr addend : ((Operation) expr2).getExprs()) {
+                            products.add(Product.make(expr, addend));
+                        }
+                        exprs.set(j, Sum.make(products));
                         exprs.remove(i);
                         return simplify();
                     }

@@ -39,6 +39,12 @@ public class SExprTokenParser extends TokenParser {
         else if (tokenValue.equals("undef")) {
             return new Token<Object>(new Undef(), origString, begin, end);
         }
+        else if (tokenValue.equals("true")) {
+            return new Token<Object>(Expr.yep(), origString, begin, end);
+        }
+        else if (tokenValue.equals("false")) {
+            return new Token<Object>(Expr.nope(), origString, begin, end);
+        }
         
         return token.castValueTo(Object.class);
     }

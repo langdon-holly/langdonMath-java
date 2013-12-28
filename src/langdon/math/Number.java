@@ -8,6 +8,14 @@ import java.util.HashMap;
 import java.math.BigDecimal;
 
 public class Number extends Constant implements Comparable<Number> {
+    
+    
+    public static void main(String[] args) {
+        System.out.println(make(1).equalsExpr(make(1)));
+        System.out.println(make(1).equalsExpr(make(0)));
+        System.out.println(make(1).notEqualsExpr(make(0)));
+        System.out.println(make(1).notEqualsExpr(make(1)));
+    }
 
     private Double val;
     
@@ -92,6 +100,14 @@ public class Number extends Constant implements Comparable<Number> {
     
     public boolean equalsExpr(Expr expr) {
         return equals(expr);
+    }
+    
+    public boolean notEqualsExpr(Expr expr) {
+        if (expr == null) return false;
+        if (expr == this) return false;
+        if (!(expr instanceof Number)) return false;
+        
+        return !val.equals(((Number) expr).val());
     }
     
     public Expr copyPass(HashMap<Expr, Expr> subs) {

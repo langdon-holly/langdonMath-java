@@ -29,6 +29,7 @@ public class ParenFunctioning implements AfterLevelPopHandler {
         functions.add("ln");
         functions.add("derivativeFunc");
         functions.add("sqrt");
+        functions.add("not");
     }
     
     public TokenList<Object> handleAfterPop(Token[] delims, TokenList<?> currentLevelW, LevelParser levelParser) throws ParseException {

@@ -17,11 +17,25 @@ public class Logarithm extends Function {
     
     public static Expr make(Expr base, Expr ofExpr) {
         Logarithm log = new Logarithm(base, ofExpr);
-        return log.simplify();
+        
+        ArrayList<Expr> norConditions = new ArrayList<Expr>();
+        norConditions.add(LessThanOrEqual.make(base, Expr.nope()));
+        norConditions.add(Equals.make(base, Expr.yep()));
+        norConditions.add(LessThanOrEqual.make(ofExpr, Expr.nope()));
+        
+        return Conditional.make(Not.make(Or.make(norConditions)), log.simplify());
     }
     
     public static Expr make(ArrayList<? extends Expr> exprs) {
         return make(exprs.get(0), exprs.get(1));
+    }
+    
+    public static Expr makeDefined(Expr base, Expr ofExpr) {
+        return new Logarithm(base, ofExpr).simplify();
+    }
+    
+    public static Expr makeDefined(ArrayList<? extends Expr> exprs) {
+        return makeDefined(exprs.get(0), exprs.get(1));
     }
     
     public Expr ofExpr() {
@@ -41,8 +55,10 @@ public class Logarithm extends Function {
         return arrayList;
     }
     
-    private Expr simplify() {
-        if (hasUndef()) return new Undef();
+    public Expr simplify() {
+        Expr conditioned = conditioned();
+        if (conditioned != null) return conditioned;
+        
         if (base.sign() <= 0 || (base instanceof Number && ((Number) base).val() == 1)) return new Undef();
         if (ofExpr.sign() <= 0) return new Undef();
         if (base.equalsExpr(ofExpr)) return Number.make(1d);
@@ -80,7 +96,7 @@ public class Logarithm extends Function {
     }
     
     public Expr copyPass(HashMap<Expr, Expr> subs) {
-        return make(base.copy(subs), ofExpr.copy(subs));
+        return makeDefined(base.copy(subs), ofExpr.copy(subs));
     }
     
     public int sign() {

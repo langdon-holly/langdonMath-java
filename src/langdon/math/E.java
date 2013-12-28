@@ -22,6 +22,10 @@ public class E extends Constant {
         return expr instanceof E;
     }
     
+    public boolean notEqualsExpr(Expr expr) {
+        return false;
+    }
+    
     public Expr copyPass(HashMap<Expr, Expr> subs) {
         return new E();
     }

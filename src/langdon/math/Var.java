@@ -54,6 +54,10 @@ public class Var extends Expr {
         return equals(expr);
     }
     
+    public boolean notEqualsExpr(Expr expr) {
+        return false;
+    }
+    
     public Expr copyPass(HashMap<Expr, Expr> subs) {
         return this;
     }

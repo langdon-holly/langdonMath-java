@@ -180,7 +180,7 @@ public class Simple {
             expression = expression.copy(context.subs);
             if (debug) System.err.println("Simple.simplify: after substitution:  " + expression);
             
-            System.out.println((interfaceStyle.equals("interactive")?(dispSource?input+" ":"")+"= ":"") + expression.toString(outputFormat));
+            System.out.println((interfaceStyle.equals("interactive")?(dispSource?input+" ":"")+"-> ":"") + expression.toString(outputFormat));
             
         } catch (Exception e) {
             System.err.println("\"" + input + "\" could not be parsed:");

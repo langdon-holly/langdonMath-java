@@ -18,6 +18,10 @@ public class Undef extends Expr {
         return false;
     }
     
+    public boolean notEqualsExpr(Expr expr) {
+        return false;
+    }
+    
     public Expr copyPass(HashMap<Expr, Expr> substitutions) {
         return new Undef();
     }

@@ -50,6 +50,10 @@ public class Sin extends Function {
         return make(exprs.get(0));
     }
     
+    public static Expr makeDefined(ArrayList<? extends Expr> exprs) {
+        return make(exprs);
+    }
+    
     public Expr deriv(Var respected) {
         return Product.make(ofExpr.deriv(respected), Cos.make(ofExpr));
     }
@@ -60,8 +64,10 @@ public class Sin extends Function {
         return arrayList;
     }
     
-    private Expr simplify() {
-        if (hasUndef()) return new Undef();
+    public Expr simplify() {
+        Expr conditioned = conditioned();
+        if (conditioned != null) return conditioned;
+        
         if (ofExpr.isConstant()) {
             Expr dividedBy2Pi = Division.make(ofExpr, Product.make(Number.make(2), new Pi()));
             
@@ -93,6 +99,10 @@ public class Sin extends Function {
         
         if (ofExpr.equalsExpr(((Operation) expr).getExprs().get(0))) return true;
         
+        return false;
+    }
+    
+    public boolean notEqualsExpr(Expr expr) {
         return false;
     }
     

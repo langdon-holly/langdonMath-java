@@ -22,12 +22,38 @@ public class Division extends Operation {
     
     public static Expr make(Expr numerator, Expr denom, boolean simplify) {
         Division division = new Division(numerator, denom);
-        if (simplify) return division.simplify();
-        return division;
+        
+        if (simplify) return addDenomCondition(division.simplify(), denom);
+        return addDenomCondition(division, denom);
     }
     
     public static Expr make(ArrayList<? extends Expr> exprs) {
-        return make(exprs.get(0), exprs.get(1));
+        // System.err.println(exprs);
+        try {
+            return make(exprs.get(0), exprs.get(1));
+        } catch(Exception e) {
+            System.err.println(e);
+            throw new RuntimeException();
+        }
+    }
+    
+    public static Expr makeDefined(Expr numerator, Expr denom) {
+        return new Division(numerator, denom).simplify();
+    }
+    
+    public static Expr makeDefined(ArrayList<? extends Expr> exprs) {
+        // System.err.println(exprs);
+        try {
+            return makeDefined(exprs.get(0), exprs.get(1));
+        } catch(Exception e) {
+            System.err.println(e);
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
+    
+    private static Expr addDenomCondition(Expr returnExpr, Expr denom) {
+        return Conditional.make(NotEqual.make(denom, Number.make(0)), returnExpr);
     }
     
     public Expr deriv(Var respected) {
@@ -41,8 +67,10 @@ public class Division extends Operation {
         return arrayList;
     }
     
-    private Expr simplify() {
-        if (hasUndef()) return new Undef();
+    public Expr simplify() {
+        Expr conditioned = conditioned();
+        if (conditioned != null) return conditioned;
+        
         if (denom instanceof Number && ((Number) denom).val() == 1) return numerator; // divide by 1
         if (denom instanceof Number && ((Number) denom).val() == 0) return new Undef();
         if (numerator instanceof Number && ((Number) numerator).val() == 0 && denom.isConstant()) return Number.make(); // zero over a non-zero constant
@@ -53,8 +81,8 @@ public class Division extends Operation {
         }
         if (numerator.equalsExpr(denom)) return Number.make(1); // x/x
         
-        if (denom instanceof Division) return make(Product.make(numerator, ((Operation) denom).getExpr(1)), ((Operation) denom).getExpr(0)); // flip up denominators in the denominator
-        if (numerator instanceof Division) return make(((Operation) numerator).getExpr(0), Product.make(((Operation) numerator).getExpr(1), denom)); // bring down denominators in the numerator
+        if (denom instanceof Division) return makeDefined(Product.make(numerator, ((Operation) denom).getExpr(1)), ((Operation) denom).getExpr(0)); // flip up denominators in the denominator
+        if (numerator instanceof Division) return makeDefined(((Operation) numerator).getExpr(0), Product.make(((Operation) numerator).getExpr(1), denom)); // bring down denominators in the numerator
         // subtract exponents when bases are equal
         if (numerator instanceof Exponent && denom instanceof Exponent && ((Operation) numerator).getExpr(0).equalsExpr(((Operation) denom).getExpr(0))) return Exponent.make(((Operation) numerator).getExpr(0), Sum.make(((Operation) numerator).getExpr(1), Product.negative(((Operation) denom).getExpr(1))));
         if (numerator instanceof Exponent && ((Operation) numerator).getExpr(0).equalsExpr(denom)) return Exponent.make(denom, Sum.make(((Operation) numerator).getExpr(1), Number.make(-1))); // subtract 1 from exponent when denominator exponent is 1
@@ -64,8 +92,8 @@ public class Division extends Operation {
         if (numerator instanceof Number && denom instanceof Number) {
             Number gcd = ((Number) numerator).gcd((Number) denom);
             // if (debug && !gcd.equalsExpr(Number.make(1))) System.err.println("gcd of (" + numerator + ", " + denom + ") = " + gcd);
-            numerator = Division.make(numerator, gcd);
-            denom = Division.make(denom, gcd);
+            numerator = Division.makeDefined(numerator, gcd);
+            denom = Division.makeDefined(denom, gcd);
         }
         
         //if (debug) System.err.println("Division simplify: " + dump());
@@ -109,7 +137,7 @@ public class Division extends Operation {
                 for (int j = 0; j < denomExprs.size(); j++) {
                     Expr denomExpr = denomExprs.get(j);
                     // if (debug) System.err.println("Division simplify: dividing (" + numeratorExpr + ")/(" + denomExpr + ")");
-                    Expr divided = Division.make(numeratorExpr, denomExpr);
+                    Expr divided = Division.makeDefined(numeratorExpr, denomExpr);
                     // if (debug) System.err.println("Division simplify: divided: " + divided);
                     if (!(divided instanceof Division)) {
                         numeratorExprs.set(i, divided);
@@ -206,8 +234,8 @@ public class Division extends Operation {
         return numerator.equalsExpr(Number.make(1)) && denom instanceof Sin;
     }
     
-    public Expr printSimplify() {
-        // System.err.println("Division.printSimplify(): this: " + this);
+    public Expr printSimplifyPass() {
+        // System.err.println("Division.printSimplifyPass(): this: " + this);
         ArrayList<Expr>[] topsbottoms = toTopsBottoms();
         ArrayList<Expr> numeratorExprs = toTopsBottoms()[0];
         ArrayList<Expr> denomExprs = toTopsBottoms()[1];
@@ -217,7 +245,7 @@ public class Division extends Operation {
             Expr[] botBasePower = botExpr.toBasePower();
             Expr botBase = botBasePower[0];
             Expr botPower = botBasePower[1];
-            // System.err.println("Division.printSimplify(): botExpr: " + botExpr);
+            // System.err.println("Division.printSimplifyPass(): botExpr: " + botExpr);
             
             boolean combined = false;
             
@@ -227,14 +255,14 @@ public class Division extends Operation {
                 Expr topBase = topBasePower[0];
                 Expr topPower = topBasePower[1];
                 
-                // System.err.println("Division.printSimplify(): topBase: " + topBase);
+                // System.err.println("Division.printSimplifyPass(): topBase: " + topBase);
                 if (topBase.isTrig() && botBase.isTrig() && topPower.equalsExpr(botPower) && ((Operation) topBase).getExpr(0).equalsExpr(((Operation) botBase).getExpr(0))) {
-                    Expr trigDivision = Division.make(topBase, botBase);
+                    Expr trigDivision = new Division(topBase, botBase).simplify();
                     trigDivision.printSimplified = true;
                     numeratorExprs.set(j, topPower.equalsExpr(Number.make(1)) ? trigDivision : Exponent.make(trigDivision, topPower, false));
                     combined = true;
                 } else if (topExpr instanceof Number && botExpr instanceof Number && decimalPrinted(((Number) topExpr).val(), ((Number) botExpr).val()) != null) {
-                    Expr numDivision = Division.make(topExpr, botExpr);
+                    Expr numDivision = new Division(topExpr, botExpr).simplify();
                     numDivision.printSimplified = true;
                     numeratorExprs.set(j, numDivision);
                     combined = true;
@@ -248,9 +276,9 @@ public class Division extends Operation {
             }
             
             if (!combined && botBase.isTrig()) {
-                // System.err.println("Division.printSimplify(): !combined && " + botBase + " is trig");
+                // System.err.println("Division.printSimplifyPass(): !combined && " + botBase + " is trig");
                 // System.err.println("  before: (Division " + ArrayLists.productArrToExpr(numeratorExprs) + " " + ArrayLists.productArrToExpr(denomExprs) + ")");
-                Expr trigFlip = Division.make(Number.make(1), botBase);
+                Expr trigFlip = new Division(Number.make(1), botBase).simplify();
                 trigFlip.printSimplified = true;
                 numeratorExprs.add(botPower.equalsExpr(Number.make(1)) ? trigFlip : Exponent.make(trigFlip, botPower, false));
                 if (numeratorExprs.get(0).equalsExpr(Number.make(1))) numeratorExprs.remove(0);
@@ -265,18 +293,14 @@ public class Division extends Operation {
         Expr newDenom = ArrayLists.productArrToExpr(denomExprs, false);
         
         Expr printSimplified = newDenom.equalsExpr(Number.make(1)) ? newNumerator
-                                                                   : Division.make(newNumerator, newDenom, false);
+                                                                   : new Division(newNumerator, newDenom);
         if (printSimplified instanceof Division) ((Division) printSimplified).printSimplified = true;
         
         return printSimplified;
     }
     
     public String pretty() {
-        return pretty(true);
-    }
-    
-    public String pretty(boolean printSimplify) {
-        if (printSimplify && !printSimplified) return printSimplify().pretty();
+        if (!printSimplified) return printSimplify().pretty();
         
         if (numerator instanceof Number && denom instanceof Number) {
             Double decimal = decimalPrinted(((Number) numerator).val(), ((Number) denom).val());
@@ -318,7 +342,7 @@ public class Division extends Operation {
     }
     
     public Expr copyPass(HashMap<Expr, Expr> subs) {
-        return make(numerator.copy(subs), denom.copy(subs));
+        return new Division(numerator.copy(subs), denom.copy(subs)).simplify();
     }
     
     public int sign() {

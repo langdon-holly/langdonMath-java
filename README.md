@@ -5,7 +5,7 @@ a symbolic math engine
 
 I wrote a computer program in Java, originally to do differentiation, but currently it simplifies a lot of numerical expressions.  
 It can differentiate and/or simplify basically anything with real numbers, e, pi, variables, sums, products, exponents, division, logarithms, sine functions, and cosine functions, except (it does not yet know how to simplify) non-(constant or e-based) logarithms.  
-Including: automatic simplification of a lot of stuff (when precision would not be lost), grouping by parenthesis, implicit multiplication (without a times symbol, for example: "2x"), negative stuff, implicit differentiation, undefined values, functional importance, and pointing to your errors.
+Including: automatic simplification of a lot of stuff (when precision would not be lost), grouping by parenthesis, implicit multiplication (without a times symbol, for example: "2x"), negative stuff, implicit differentiation, undefined values, functional importance, pointing to your errors, conditional stuff (values), piecewise functions/values, comparisons, logical stuff, and chaining comparisons.
 
 
 Command-line Arguments for langdon.math.Simple
@@ -303,11 +303,10 @@ Source Files
 + Simple.java      (a simple simplification user interface)
 + Derivative.java  (a user interface for differentiation (also a derivative class))
 + Expr.java        (superclass for expressions (including sums, variables, e))
-+ // BoolExpr.java    (superclass for boolean Exprs)
 + Constant.java    (superclass for constants (e, pi, numbers))
 + Operation.java   (superclass for operations (like sums, products))
 + Function.java    (abstract functions (like sin, log, sqrt))
-+ // Conditional.java (conditional stuff)
++ Conditional.java (conditional stuff)
 + ExprParser.java  (the longest (and most complex), parses an expression from a string)
 + Subscript.java   (a mathematical subscript, like for a logarithm)
 + Context.java     (keeps track of variable names for parsing)
@@ -337,4 +336,14 @@ Source Files
 + Sin.java         (the trigonometric sine function)
 + Cos.java         (the trigonometric cosine function)
 + Undef.java       (undefined (undef))
-+ // Bool.java        (true (yes) or false (no))
++ Comparison.java  (a Comparison of numbers)
++ Piecewise.java   (Piecewise functions/values)
++ Equals.java      (stuff Equal to each other)
++ LessThan.java (expr1 < expr2)
++ Or.java          (it's either a file Or it's not)
++ Not.java         (Not what you don't think it is)
++ And.java         (Anding stuff)
++ GreaterThan.java (expr1 > expr2)
++ GreaterThanOrEqual.java (expr1 >= expr2)
++ LessThanOrEqual.java (expr1 <= expr2)
++ NotEqual.java    (they're Not Equal)

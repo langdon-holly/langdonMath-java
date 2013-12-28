@@ -22,9 +22,22 @@ public class Conditional extends Operation {
         return make(exprs.get(1), exprs.get(0));
     }
     
-    private Expr simplify() {
+    public static Expr makeDefined(ArrayList<? extends Expr> exprs) {
+        return make(exprs.get(1), exprs.get(0));
+    }
+    
+    public Expr simplify() {
         if (ifIs.isTrue()) return then;
-        if (ifIs.isFalse()) return new Undef();
+        if (ifIs.isFalse() || hasUndef()) return new Undef();
+        if (ifIs instanceof Conditional) return make(And.make(ifIs.defined(), ifIs.condition()), then);
+        if (then instanceof Conditional) {
+            if (ifIs.implies(then.condition())) return new Conditional(ifIs, then.defined());
+            return make(And.make(then.condition(), ifIs), then.defined());
+        }
+        
+        HashMap<Expr, Expr> subs = new HashMap<Expr, Expr>();
+        subs.put(ifIs, Expr.yep());
+        then = then.copy(subs);
         return this;
     }
     

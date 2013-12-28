@@ -83,6 +83,13 @@ public class ExprTokenParser extends TokenParser {
         else if (tokenValue.equals("false")) {
             return new Token<Object>(Expr.nope(), origString, begin, end);
         }
+        else if (tokenValue.equals("equals") || tokenValue.equals("notEqual")
+              || tokenValue.equals("lessThan") || tokenValue.equals("greaterThan")
+              || tokenValue.equals("lessThanOrEqual") || tokenValue.equals("greaterThanOrEqual")) {
+            PartialParseExpr partial = new PartialParseExpr("comparison");
+            partial.put("operation", tokenValue);
+            return new Token<Object>(partial, origString, begin, end);
+        }
         
         return token.castValueTo(Object.class);
     }

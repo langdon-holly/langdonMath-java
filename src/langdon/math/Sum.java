@@ -29,6 +29,10 @@ public class Sum extends Operation {
         return new Sum(exprs).simplify();
     }
     
+    public static Expr makeDefined(ArrayList<? extends Expr> exprs) {
+        return make(exprs);
+    }
+    
     public static Expr make(Expr expr1, Expr expr2) {
         ArrayList<Expr> tmp1 = new ArrayList<Expr>();
         tmp1.add(expr1);
@@ -47,7 +51,17 @@ public class Sum extends Operation {
         return Sum.make(exprsDiffed);
     }
     
+    public Expr printSimplifyPass() {
+        if (exprs.size() == 2 && exprs.get(0) instanceof Product && ((Operation) exprs.get(0)).getExprs().size() == 2
+                && ((Operation) exprs.get(0)).getExpr(0).equalsExpr(Number.make(-1))
+                && exprs.get(1).equalsExpr(Number.make(1))) return new Not(((Operation) exprs.get(0)).getExpr(1));
+        this.printSimplified = true;
+        return this;
+    }
+    
     public String pretty() {
+        if (!printSimplified) return printSimplify().pretty();
+        
         if (exprs.size() == 1) return exprs.get(0).pretty();
         
         String string = new String();
@@ -73,8 +87,10 @@ public class Sum extends Operation {
         return string;
     }
     
-    private Expr simplify() {
-        if (hasUndef()) return new Undef();
+    public Expr simplify() {
+        Expr conditioned = conditioned();
+        if (conditioned != null) return conditioned;
+        
         ArrayList<Expr> constants = new ArrayList<Expr>();
         for (int i = 0; i < exprs.size(); i++) {
             Expr expr = exprs.get(i);
