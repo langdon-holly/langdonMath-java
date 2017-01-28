@@ -19,9 +19,9 @@ public abstract class Operation extends Expr {
         throw new UnsupportedOperationException();
     }
     
-    public static <E extends Expr> Expr make(Collection<E> exprs) {
-        return make(new ArrayList<E>(exprs));
-    }
+    //public static <E extends Expr> Expr make(Collection<E> exprs) {
+    //    return make(new ArrayList<E>(exprs));
+    //}
     
     public Expr getExpr(int index) {
         return getExprs().get(index);
